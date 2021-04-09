@@ -21,22 +21,10 @@ Page({
       return
     }
     if (wx.getUserProfile) {
-      console.log(wx.getUserProfile{
-        desc: "User login.",
-        success: (res) => {
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
-          })
-        }
-      });
       this.setData({
         canIUseGetUserProfile: true,
       })
     }
-    console.log(wx.getUserInfo({
-      lang: "zh_CN",
-    }))
   },
 
   getUserProfile() {
