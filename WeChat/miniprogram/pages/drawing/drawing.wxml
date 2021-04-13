@@ -1,0 +1,3 @@
+<!--miniprogram/pages/drawing/drawing.wxml-->
+<text>miniprogram/pages/drawing/drawing.wxml</text>
+<canvas type="webgl" id="Canvas"></canvas>
