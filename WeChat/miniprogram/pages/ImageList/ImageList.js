@@ -5,14 +5,39 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    windowHeight: 0,
+    navbarHeight: 0,
+    headerHeight: 0,
+    scrollViewHeight: 0,
+    number: 1,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+        wx.getSystemInfo({
+          success: function(res) {
+              that.setData({
+                  windowHeight: res.windowHeight
+              });
+          }
+      });
 
+      let query = wx.createSelectorQuery().in(this);
+      query.select('#navbar').boundingClientRect();
+      query.select('#header').boundingClientRect();
+
+      query.exec((res) => {
+          let navbarHeight = res[0].height;
+          let headerHeight = res[1].height;
+
+          let scrollViewHeight = this.data.windowHeight - navbarHeight - headerHeight;
+
+          this.setData({
+              scrollViewHeight: scrollViewHeight
+          });
+      });
   },
 
   /**

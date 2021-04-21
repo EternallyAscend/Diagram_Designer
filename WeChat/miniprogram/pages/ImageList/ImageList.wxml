@@ -1,2 +1,28 @@
 <!--miniprogram/pages/ImageList.wxml-->
-<text>miniprogram/pages/ImageList.wxml</text>
+
+<!-- Tools Bar -->
+<view wx:if="!{{number}}" style="position:relative; width: 100%; background: #d3d3d3; min-height: 90rpx">
+<button style="width: 100%; height: 90rpx; position: relative;">Create Figure</button>
+</view>
+
+<!-- Content View -->
+<view style="width:100%; height:100%; min-height: 100%">
+
+<!-- No Fiugre Notice. -->
+<view wx:if="!{{number}}" style="position:relative; width: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center; min-height: {{windowHeight}}px; height: 465px">
+<!-- <view wx:if="!{{Number}}" style="width: 100%; height: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center;"> -->
+<text style="display:flex; align-items: center; justify-content: center; text-align: center;">Empty, Create Your First Figure Now.</text>
+</view>
+
+<!-- Figure Views -->
+<view wx:if="{{number}}">
+<text style="" wx:if="{{Number}}">{{number}} Figures</text>
+<view wx:for="{{figureList}}">
+<text>Figure Name: </text>
+{{figureInfo.Name}}
+<text>Create Time: </text>
+<text>Desctiption: </text>
+</view>
+</view>
+
+</view>
