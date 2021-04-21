@@ -1,28 +1,35 @@
 <!--miniprogram/pages/ImageList.wxml-->
 
-<!-- Tools Bar -->
-<view wx:if="!{{number}}" style="position:relative; width: 100%; background: #d3d3d3; min-height: 90rpx">
-<button style="width: 100%; height: 90rpx; position: relative;">Create Figure</button>
+<!-- Tools Bar #00bfff-->
+<view wx:if="!{{number}}" style="position:relative; width: 100%; background: #87CEFA; min-height: 90rpx">
+<button style="width: 100%; height: 90rpx; position: relative;" bindtap="createFigure">- Create Figure -</button>
 </view>
 
 <!-- Content View -->
-<view style="width:100%; height:100%; min-height: 100%">
+<scroll-view style="width:100%; height: {{scrollViewHeight}}px; min-height: 99px; white-space: nowrap;" scroll-y="true">
+<view wx:if="{{number < 0}}" style="position:relative; width: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center; min-height: 100%; height:100%">
+<!-- <view wx:if="!{{number}}" style="width: 100%; height: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center;"> -->
+<text style="display:flex; align-items: center; justify-content: center; text-align: center;">Loading... Please wait.</text>
+</view>
+
 
 <!-- No Fiugre Notice. -->
-<view wx:if="!{{number}}" style="position:relative; width: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center; min-height: {{windowHeight}}px; height: 465px">
-<!-- <view wx:if="!{{Number}}" style="width: 100%; height: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center;"> -->
+<view wx:if="{{number == 0}}" style="position:relative; width: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center; min-height: 100%; height:100%">
+<!-- <view wx:if="!{{number}}" style="width: 100%; height: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center;"> -->
 <text style="display:flex; align-items: center; justify-content: center; text-align: center;">Empty, Create Your First Figure Now.</text>
+<text style="display:flex; align-items: center; justify-content: center; text-align: center;">{{number}}</text>
 </view>
 
 <!-- Figure Views -->
-<view wx:if="{{number}}">
-<text style="" wx:if="{{Number}}">{{number}} Figures</text>
-<view wx:for="{{figureList}}">
-<text>Figure Name: </text>
-{{figureInfo.Name}}
-<text>Create Time: </text>
-<text>Desctiption: </text>
-</view>
-</view>
+<scroll-view wx:if="{{number > 0}}" style="width:100%; height: {{scrollViewHeight}}px; min-height: 99px; white-space: nowrap;" scroll-y="true">
+<text style="" wx:if="{{number}}">{{number}} Figures</text>
+<view wx:for="{{figureList}}" wx:key="graph_id">
+
+<view><text> Figure Name: {{item.name}} </text></view>
+<view><text> Create Time: {{item.time}} </text></view>
+<view><text> Desctiption: {{item.desc}} </text></view>
 
 </view>
+</scroll-view>
+
+</scroll-view>

@@ -5,46 +5,114 @@ Page({
    * 页面的初始数据
    */
   data: {
+    uuid: null,
+    number: -1,
+    figureList: null,
+    titlesHeight: 40,
     windowHeight: 0,
     navbarHeight: 0,
     headerHeight: 0,
     scrollViewHeight: 0,
-    number: 1,
+  },
+
+  onGetOpenid: function() {
+    wx.cloud.callFunction({
+      name: 'login',
+      data: {},
+      success: res => {
+        this.setData({
+          uuid: res.result.openid,
+        });
+      },
+      fail: err => {
+        console.error(err);
+        this.onGetOpenid();
+      }
+    })
+  },
+
+  createFigure: function() {
+    let name = "Name";
+    let desc = "Description";
+    let time = new Date().format("yyyy-MM-dd hh:mm:ss");
+    let grap = null;
+    let database = wx.cloud.database();
+    database.collection('Graph').add({
+      data: {
+        name: name,
+        desc: desc,
+        time: time,
+        grap: grap,
+      },
+      success: res => {
+        let id = res._id;
+        wx.showToast({
+          title: 'Create OK.',
+        });
+        this.onLoad();
+      },
+      fail: err => {
+        wx.showToast({
+          icon: 'none',
+          title: 'Create Failed.',
+        });
+        console.error(err);
+      }
+    });
+
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-        wx.getSystemInfo({
-          success: function(res) {
-              that.setData({
-                  windowHeight: res.windowHeight
-              });
-          }
-      });
+    // Fetch User Information.
+    this.onGetOpenid();
 
-      let query = wx.createSelectorQuery().in(this);
-      query.select('#navbar').boundingClientRect();
-      query.select('#header').boundingClientRect();
+    let database = wx.cloud.database();
+    database.collection('Graph').where({
+      _openid: this.data.uuid,
+    }).get({
+      success: res => {
+        this.setData({
+          figureList: res.data,
+          number: res.data.length,
+        });
+      },
+      fail: err => {
+        wx.showToast({
+          icon: 'none',
+          title: 'Loading Failed.'
+        })
+        console.error(err)
+      }
+    });
+    
 
-      query.exec((res) => {
-          let navbarHeight = res[0].height;
-          let headerHeight = res[1].height;
+    // Fetch System Information.
+    let that = this;
+    wx.getSystemInfo({
+      success: function(res) {
+        that.setData({
+          windowHeight: res.windowHeight,
+          navbarHeight: res.navbarHeight,
+          headerHeight: res.navbarHeight
+        });
+      }
+    });
 
-          let scrollViewHeight = this.data.windowHeight - navbarHeight - headerHeight;
+    let scrollHeight = this.data.windowHeight - this.data.titlesHeight;
 
-          this.setData({
-              scrollViewHeight: scrollViewHeight
-          });
-      });
+    this.setData({
+        scrollViewHeight: scrollHeight
+    });
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
+    
   },
 
   /**
@@ -72,20 +140,25 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    this.onLoad();
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    wx.showToast({
+      icon: 'none',
+      title: 'Reach Bottom.',
+    })
   },
 
   /**
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-
+    wx.showShareMenu({
+      withShareTicket: true,
+    })
   }
 })
