@@ -5,9 +5,12 @@ Page({
    * 页面的初始数据
    */
   data: {
+    create: false,
     uuid: null,
     number: -1,
     figureList: null,
+    name: "",
+    desc: "",
     titlesHeight: 40,
     windowHeight: 0,
     navbarHeight: 0,
@@ -31,16 +34,57 @@ Page({
     })
   },
 
+  setName: function(e) {
+    this.setData({
+      name: e.detail.value,
+    });
+  },
+
+  setDescription: function(e) {
+    this.setData({
+      desc: e.detail.value,
+    });
+  },
+
+  setNameDescrption: function() {
+    this.setData({
+      create: true,
+    })
+    this.onLoad();
+  },
+
+  cancelCreateFigure: function() {
+    this.setData({
+      create: false,
+      name: "",
+      desc: "",
+    })
+    this.onLoad();
+  },
+
   createFigure: function() {
-    let name = "Name";
-    let desc = "Description";
-    let time = new Date().format("yyyy-MM-dd hh:mm:ss");
+    if (this.data.name.length == 0) {
+      wx.showToast({
+        icon: 'none',
+        title: 'Please input title.',
+      });
+      return;
+    }
+    if (this.data.desc.length == 0) {
+      wx.showToast({
+        icon: 'none',
+        title: 'No Description.',
+      });
+      return;
+    }
+    let time = new Date().toLocaleString(); //.split('/').join('-');
+    // console.log(new Date().toLocaleDateString());
     let grap = null;
     let database = wx.cloud.database();
     database.collection('Graph').add({
       data: {
-        name: name,
-        desc: desc,
+        name: this.data.name,
+        desc: this.data.desc,
         time: time,
         grap: grap,
       },
@@ -48,6 +92,11 @@ Page({
         let id = res._id;
         wx.showToast({
           title: 'Create OK.',
+        });
+        this.setData({
+          create: false,
+          name: "",
+          desc: "",
         });
         this.onLoad();
       },
@@ -57,9 +106,18 @@ Page({
           title: 'Create Failed.',
         });
         console.error(err);
+        this.setData({
+          create: false,
+          name: "",
+          desc: "",
+        });
+        this.onLoad();
       }
     });
+  },
 
+  openFigure: function(arg) {
+    console.log(arg.currentTarget.dataset.index);
   },
 
   /**
