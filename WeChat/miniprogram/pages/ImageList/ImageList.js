@@ -1,4 +1,6 @@
 // miniprogram/pages/ImageList.js
+const app = getApp();
+
 Page({
 
   /**
@@ -6,7 +8,7 @@ Page({
    */
   data: {
     create: false,
-    uuid: null,
+    // uuid: null,
     number: -1,
     figureList: null,
     name: "",
@@ -23,15 +25,16 @@ Page({
       name: 'login',
       data: {},
       success: res => {
-        this.setData({
-          uuid: res.result.openid,
-        });
+        app.globalData.openid = res.result.openid;
+        // this.setData({
+        //   uuid: res.result.openid,
+        // });
       },
       fail: err => {
         console.error(err);
-        this.onGetOpenid();
+        // this.onGetOpenid();
       }
-    })
+    });
   },
 
   setName: function(e) {
@@ -79,7 +82,7 @@ Page({
     }
     let time = new Date().toLocaleString(); //.split('/').join('-');
     // console.log(new Date().toLocaleDateString());
-    let grap = null;
+    let grap = [];
     let database = wx.cloud.database();
     database.collection('Graph').add({
       data: {
@@ -119,12 +122,20 @@ Page({
   openFigure: function(arg) {
     console.log(arg.currentTarget.dataset.index);
     wx.navigateTo({
-      url: 'pages/Drawing/Drawing?Image=' + arg.currentTarget.dataset.index,
-      events: events,
-      success: (result) => {},
-      fail: (res) => {},
+      url: '/pages/drawing/drawing?Image=' + arg.currentTarget.dataset.index,
+      success: (result) => {
+        wx.showToast({
+          title: 'title',
+        })
+      },
+      fail: (res) => {
+        wx.showToast({
+          title: 'failed' + res,
+        });
+        console.log(res);
+      },
       complete: (res) => {},
-    })
+    });
   },
 
   /**
@@ -132,11 +143,14 @@ Page({
    */
   onLoad: function (options) {
     // Fetch User Information.
-    this.onGetOpenid();
+    if (null == app.globalData.openid) {
+      this.onGetOpenid();
+    }
 
     let database = wx.cloud.database();
     database.collection('Graph').where({
-      _openid: this.data.uuid,
+      // _openid: this.data.uuid,
+      _openid: app.globalData.openid,
     }).get({
       success: res => {
         this.setData({
