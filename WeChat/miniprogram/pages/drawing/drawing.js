@@ -13,6 +13,7 @@ Page({
     boardX: 0,
     boardY: 0,
     selected: null,
+    canvas: null,
     graphId: null,
     editable: true,
   },
@@ -124,6 +125,12 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    const query = wx.createSelectorQuery();
+    query.select("#canvas")
+      .fields({node: true, size: true})
+      .exec((res)=>{
+        this.canvas = res[0].node
+      })
 
     if (null == app.globalData.openid) {
       this.onGetOpenid();
@@ -218,31 +225,32 @@ Page({
 
   },
   
-  createPattern: function(ctx, x, y, type) {
+  createPattern: function(x, y, type) {
     this.patterns.push({
-      x: x,
-      y: y,
+      realX: x,
+      realY: y,
       height: 100,
       width: 150,
       type: type,
     })
   },
 
-  createText: function(ctx, x, y, text) {
+  createText: function(x, y, text) {
     this.patterns.push({
-      x: x,
-      y: y,
+      realX: x,
+      realY: y,
       size: 14,
       type: "text",
+      content: text,
     })
   },
 
   selectObject: function(x, y){
     var selectedIndex = this.patterns.findIndex((value, index, array)=>{
-      return x > value.x 
-        && x < value.x + value.width
-        && y > value.y
-        && y < value.y + value.height
+      return x > value.realX 
+        && x < value.realX + value.width
+        && y > value.realY
+        && y < value.realY + value.height
     })
     if (selectedIndex==-1){
       this.selected = null
@@ -253,7 +261,36 @@ Page({
     }
   },
 
-  onTouchCanvas: function(){
+  drawAllObjects: function(){
+    const ctx = this.canvas.getContext("2d")
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    for(var i = 0; i < this.patterns.length; i++){
+      drawObject(this.patterns[i], ctx)
+    }
+  },
 
+  drawObject: function(obj, ctx){
+    var objX = this.boardX + (obj.realX - this.boardX)*this.boardScale
+    var objY = this.boardY + (obj.realY - this.boardY)*this.boardScale
+    if(obj.type == "rect") {
+      ctx.strokeRect(objX, objY, obj.height*this.boardScale, obj.width*this.boardScale)
+    }
+    else if(obj.type == "text") {
+      ctx.font = obj.size + "px SimHei"
+      ctx.fillText(obj.content, objX, objY)
+    }
+  },
+
+  onTouchCanvas: function(event){
+    switch(this.paintMode){
+      case "select":
+        this.selectObject(event.touches[0].pageX - this.canvas.left, event.touches[0].pageY - canvas.top)
+        break
+      case "rect":
+        this.createPattern(event.touches[0].pageX - this.canvas.left, event.touches[0].pageY - canvas.top, this.paintMode)
+        break
+      
+    }
+    drawAllObjects()
   }
 })
