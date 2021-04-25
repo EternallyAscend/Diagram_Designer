@@ -73,5 +73,17 @@
     </navigator>
   </view>
 
+  <!-- 云调用 -->
+  <view class="uploader">
+    <navigator url="../drawing/drawing" open-type="navigate" class="uploader-text">
+      <text>画板</text>
+    </navigator>
+  </view>
+
+  <view class="uploader">
+    <navigator url="../ImageList/ImageList" open-type="navigate" class="uploader-text">
+      <text>云调用</text>
+    </navigator>
+  </view>
 
 </view>

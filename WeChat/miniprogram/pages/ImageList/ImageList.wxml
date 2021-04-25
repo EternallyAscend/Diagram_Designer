@@ -1,0 +1,62 @@
+<!--miniprogram/pages/ImageList.wxml-->
+
+<!-- Tools Bar #00bfff-->
+<view wx:if="{{!create}}" style="position:relative; width: 100%; background: #87CEFA; min-height: 90rpx">
+<button style="width: 100%; height: 90rpx; position: relative;" bindtap="setNameDescrption">- Create Figure -</button>
+</view>
+
+<!-- Content View -->
+<view wx:if="{{!create}}" style="width:100%; height: {{scrollViewHeight}}px; min-height: 99px;" >
+<!-- <scroll-view style="width:100%; height: {{scrollViewHeight}}px; min-height: 99px; white-space: nowrap;" scroll-y="true"> -->
+<view wx:if="{{number < 0}}" style="position:relative; width: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center; min-height: 100%; height:100%">
+<!-- <view wx:if="!{{number}}" style="width: 100%; height: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center;"> -->
+<text style="display:flex; align-items: center; justify-content: center; text-align: center;">Loading... Please wait.</text>
+</view>
+
+
+<!-- No Fiugre Notice. -->
+<view wx:if="{{number == 0}}" style="position:relative; width: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center; min-height: 100%; height:100%">
+<!-- <view wx:if="!{{number}}" style="width: 100%; height: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center;"> -->
+<text style="display:flex; align-items: center; justify-content: center; text-align: center;">Empty, Create Your First Figure Now.</text>
+<!-- <text style="display:flex; align-items: center; justify-content: center; text-align: center;">{{number}}</text> -->
+</view>
+
+<!-- Figure Views -->
+<scroll-view wx:if="{{number > 0}}" style="width:100%; height: {{scrollViewHeight}}px; min-height: {{scrollViewHeight}}px; white-space: nowrap;" scroll-y="true">
+
+<text style="" wx:if="{{number}}">{{number}} Figures</text>
+
+<view wx:for="{{figureList}}" wx:key="_openid" style="border: solid 5rpx; margin: 10rpx;">
+
+<view bindtap="openFigure" data-index="{{item._id}}">
+<view><text> {{index + 1}}: {{item.name}} at {{item.time}} </text></view>
+<view style="height: 200rpx; min-height: 200rpx; width: 100%; min-width: 100%; background: #00bfff">
+</view>
+<view><text> Desctiption: {{item.desc}} </text></view>
+</view>
+<!-- <button>Edit</button>
+<button>Delete</button> -->
+<!-- <view><text> Figure Name: {{item.name}} </text></view> -->
+<!-- <view><text> Create Time: {{item.time}} </text></view> -->
+<!-- <view><text> Desctiption: {{item.desc}} </text></view> -->
+
+</view>
+
+<view style="position:relative; width: 100%; display:flex; align-items: center; justify-content: center; text-align: center;"><text> - Bottom - </text></view>
+</scroll-view>
+
+</view>
+<!-- </scroll-view> -->
+
+<view wx:if='{{create}}' style="width:100%; height: {{windowHeight}}px; min-height: 100%;  display:flex; align-items: center; justify-content: center; text-align: center;">
+  <view>
+  <view><text>Figure Information</text></view>
+
+  <input placeholder="Please input name" bindinput="setName"></input>
+  <input placeholder="Please input description" bindinput="setDescription"></input>
+  <view><button catchtap="createFigure">Confirm</button></view>
+  <view><button catchtap="cancelCreateFigure">Cancel</button></view>
+  </view>
+</view>
+
+<!-- Add Latest Modify Time Later. -->
