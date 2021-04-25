@@ -26,10 +26,12 @@
 
 <text style="" wx:if="{{number}}">{{number}} Figures</text>
 
-<view wx:for="{{figureList}}" wx:key="_openid">
+<view wx:for="{{figureList}}" wx:key="_openid" style="border: solid 5rpx; margin: 10rpx;">
 
 <view bindtap="openFigure" data-index="{{item._id}}">
 <view><text> {{index + 1}}: {{item.name}} at {{item.time}} </text></view>
+<view style="height: 200rpx; min-height: 200rpx; width: 100%; min-width: 100%; background: #00FF00">
+</view>
 <view><text> Desctiption: {{item.desc}} </text></view>
 </view>
 <!-- <button>Edit</button>
@@ -49,9 +51,12 @@
 <view wx:if='{{create}}' style="width:100%; height: {{windowHeight}}px; min-height: 100%;  display:flex; align-items: center; justify-content: center; text-align: center;">
   <view>
   <view><text>Figure Information</text></view>
+
   <input placeholder="Please input name" bindinput="setName"></input>
   <input placeholder="Please input description" bindinput="setDescription"></input>
   <view><button catchtap="createFigure">Confirm</button></view>
   <view><button catchtap="cancelCreateFigure">Cancel</button></view>
   </view>
 </view>
+
+<!-- Add Latest Modify Time Later. -->

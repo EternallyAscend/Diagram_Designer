@@ -118,6 +118,13 @@ Page({
 
   openFigure: function(arg) {
     console.log(arg.currentTarget.dataset.index);
+    wx.navigateTo({
+      url: 'pages/Drawing/Drawing?Image=' + arg.currentTarget.dataset.index,
+      events: events,
+      success: (result) => {},
+      fail: (res) => {},
+      complete: (res) => {},
+    })
   },
 
   /**
