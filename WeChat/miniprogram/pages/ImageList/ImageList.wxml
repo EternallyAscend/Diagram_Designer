@@ -30,7 +30,7 @@
 
 <view bindtap="openFigure" data-index="{{item._id}}">
 <view><text> {{index + 1}}: {{item.name}} at {{item.time}} </text></view>
-<view style="height: 200rpx; min-height: 200rpx; width: 100%; min-width: 100%; background: #00FF00">
+<view style="height: 200rpx; min-height: 200rpx; width: 100%; min-width: 100%; background: #00bfff">
 </view>
 <view><text> Desctiption: {{item.desc}} </text></view>
 </view>

@@ -1,4 +1,6 @@
 // miniprogram/pages/drawing/drawing.js
+const app = getApp();
+
 Page({
 
   /**
@@ -12,6 +14,111 @@ Page({
     boardY: 0,
     selected: null,
     canvas: null,
+    graphId: null,
+    editable: true,
+  },
+
+  readImage: function(id) {
+    console.log(id);
+    const db = wx.cloud.database()
+    db.collection('Graph').doc(id).get({
+      success: res => {
+        if (res._id != app.globalData.openid) {
+          db.collection("SharingMap").where({
+            graph_id: id,
+            user_id: app.globalData.openid,
+          }).get({
+            success: res => {
+              this.setData({
+                editable: res.data.editable,
+              });
+            },
+            fail: err => {
+              wx.showToast({
+                icon: 'none',
+                title: 'No Auth.',
+              });
+              return;
+            },
+          })
+        }
+        this.setData({
+          patterns: res.data,
+          // queryResult: JSON.stringify(res.data, null, 2)
+        });
+      },
+      fail: err => {
+        wx.showToast({
+          icon: 'none',
+          title: 'Open Failed.',
+        });
+        wx.navigateBack();
+      }
+    });
+  },
+
+  onGetOpenid: function() {
+    wx.cloud.callFunction({
+      name: 'login',
+      data: {},
+      success: res => {
+        app.globalData.openid = res.result.openid;
+      },
+      fail: err => {
+        console.error(err);
+      }
+    });
+  },
+
+  saveFigure: function() {
+    const db = wx.cloud.database();
+    db.collection('Graph').doc(this.data.graphId).update({
+      data: {
+        grap: this.data.patterns,
+        latest: new Date().toLocaleString(),
+      },
+      success: res => {
+        console.log(res);
+      },
+      fail: err => {
+        wx.showToast({
+          icon: 'none',
+          title: 'title',
+        })
+      }
+    })
+  },
+
+  deleteFigure: function() {
+    if (this.data.graphId && this.data.editable) {
+      const db = wx.cloud.database()
+      db.collection('Graph').doc(this.data.graphId).remove({
+        success: res => {
+          wx.showToast({
+            title: 'Delete OK',
+          });
+          this.setData({
+            graphId: null,
+          });
+          wx.navigateBack({
+            delta: 1,
+          });
+          var pages = getCurrentPages();
+          var beforePage = pages[pages.length - 2];
+          beforePage.onLoad();
+        },
+        fail: err => {
+          wx.showToast({
+            icon: 'none',
+            title: 'Delete Failed.',
+          });
+        }
+      })
+    } else {
+      wx.showToast({
+        title: 'Not a Record.',
+      });
+    }
   },
 
   /**
@@ -24,6 +131,49 @@ Page({
       .exec((res)=>{
         this.canvas = res[0].node
       })
+
+    if (null == app.globalData.openid) {
+      this.onGetOpenid();
+    }
+
+    // if (null == app.globalData.openid) {
+    //   wx.cloud.callFunction({
+    //     name: 'login',
+    //     data: {},
+    //     success: res => {
+    //       app.globalData.openid = res.result.openid;
+    //     },
+    //     fail: err => {
+    //       wx.showToast({
+    //         title: 'No Auth!',
+    //         icon: 'none',
+    //         image: '',
+    //         duration: 1500,
+    //         mask: false,
+    //         success: (result)=>{
+              
+    //         },
+    //         fail: ()=>{},
+    //         complete: ()=>{},
+    //       });
+    //     },
+    //   });
+    // }
+    var that = this;
+    this.setData({
+      graphId: options.Image,
+    });
+    this.readImage(this.data.graphId);
+    wx.showToast({
+      title: this.data.patterns,
+    });
+    wx.showToast({
+      title: this.data.graphId,
+    })
+
+    
+    this.saveFigure();
+    // this.deleteFigure();
   },
 
   /**
