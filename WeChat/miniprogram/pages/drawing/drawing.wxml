@@ -1,7 +1,11 @@
 <!--miniprogram/pages/drawing/drawing.wxml-->
-<view>
+<view style="width: 100%;">
   <!-- Title -->
-  <view style="align-items:center;">{{name}}</view>
+  <view style="height: 5rpx;"></view>
+  <view style="width: 100%; text-align: center;" catchtap="showDescription">
+    <text style="height: {{titlesHeight}}rpx; width: 100%; font-size: 50rpx; justify-content: center; align-items: center;">{{name}}</text>
+  </view>
+  <view style="background: #010101; width: 100%; height: 5rpx;"></view>
   <!-- Main Body -->
   <view>
     <!-- Top Graph Tool Bar -->
@@ -19,13 +23,16 @@
       <text class="icon-A" style="font-size:128rpx"/>
       <span class="icon-A" style="font-size:128rpx"></span> -->
       <!-- <image src="/miniprogram/icon/icon-test2.svg" class='seat-img'></image> -->
-      <image class="image1" src="../../icon/R.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
-      <image class="image1" src="../../icon/tx-fill-pinghangsibianxing.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
-      <image class="image1" src="../../icon/lingxing.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
-      <image class="image1" src="../../icon/tx-fill-tuoyuanxing.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
-      <image class="image1" src="../../icon/icon-test55.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
-      <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
-      <image class="image1" src="../../icon/icon-test11.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+
+      <image class="image1" src="../../icon/R.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; margin-left: 25rpx;"></image>
+      <image class="image1" src="../../icon/tx-fill-pinghangsibianxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;"></image>
+      <image class="image1" src="../../icon/lingxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;"></image>
+      <image class="image1" src="../../icon/tx-fill-tuoyuanxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;"></image>
+      <image class="image1" src="../../icon/icon-test55.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;"></image>
+      <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;"></image>
+      <!-- Select Button -->
+      <image class="image1" src="../../icon/icon-test11.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;"></image>
+
       <!-- <text>□</text>
       <text>▲</text>
       <text>*</text>
@@ -36,19 +43,22 @@
     </view>
     <!-- Figure Area -->
     <view>
-      <canvas type="webgl" id="Canvas"></canvas>
+      <canvas type="webgl" id="Canvas" style="height: {{scrollViewHeight}}rpx"></canvas>
     </view>
     <!-- Bottom Control Tool Bar -->
     <view>
-      <image class="image1" src="../../icon/icon-test45.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
-      <image class="image1" src="../../icon/icon-test47.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/icon-test45.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx; margin-left: 25rpx;"></image>
+      <image class="image1" src="../../icon/icon-test47.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
 
-      <image class="image1" src="../../icon/add-select.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
-      <image class="image1" src="../../icon/icon-test19.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
-      <image class="image1" src="../../icon/sami-select.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/add-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
+      
+      <!-- Save Button -->
+      <image class="image1" src="../../icon/icon-test19.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
+      
+      <image class="image1" src="../../icon/sami-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
 
-      <image class="image1" src="../../icon/icon-test46.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
-      <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/icon-test46.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
+      <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
       <!-- <text>↑</text>
       <text>↓</text>
       <text>+</text>

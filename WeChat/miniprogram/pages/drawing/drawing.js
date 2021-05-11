@@ -18,6 +18,14 @@ Page({
     editable: true,
     name: "",
     desc: "",
+    titlesHeight: 50,
+    headBar: 100,
+    bottomBar: 100,
+    windowWidth: 0,
+    windowHeight: 0,
+    navbarHeight: 0,
+    headerHeight: 0,
+    scrollViewHeight: 0,
   },
 
   readImage: function(id) {
@@ -52,9 +60,6 @@ Page({
           desc: res.data.desc,
           // queryResult: JSON.stringify(res.data, null, 2)
         });
-        // wx.showToast({
-        //   title: res._id+"name"+res.name+"\n"+res.desc,
-        // });
       },
       fail: err => {
         wx.showToast({
@@ -130,6 +135,14 @@ Page({
     }
   },
 
+  showDescription: function() {
+    wx.showToast({
+      icon: 'none',
+      image: '../../icon/info_filled.png',
+      title: this.data.desc,
+    })
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -168,24 +181,29 @@ Page({
     //     },
     //   });
     // }
+    
+    // Fetch System Information.
     var that = this;
+    wx.getSystemInfo({
+      success: function(res) {
+        that.setData({
+          windowWidth: res.windowWidth,
+          windowHeight: res.windowHeight,
+        });
+      }
+    });
+
+    // let scrollHeight = this.data.windowHeight - this.data.titlesHeight - this.data.headBar - this.data.bottomBar;
+    let scrollHeight = 750 / this.data.windowWidth * this.data.windowHeight - this.data.titlesHeight - this.data.headBar - this.data.bottomBar - 40;
+
+    this.setData({
+        scrollViewHeight: scrollHeight
+    });
+
     this.setData({
       graphId: options.Image,
     });
     this.readImage(this.data.graphId);
-    console.log(this.data.name);
-    console.log(this.data.desc);
-
-    // wx.showToast({
-    //   title: this.data.patterns,
-    // });
-    // wx.showToast({
-    //   title: this.data.graphId,
-    // });
-    // wx.showToast({
-    //   title: this.data.name,
-    // });
-
     
     // this.saveFigure();
     // this.deleteFigure();
@@ -216,7 +234,9 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    // if (this.data.id) {
+    //   this.saveFigure();
+    // }
   },
 
   /**
