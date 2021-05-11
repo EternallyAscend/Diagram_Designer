@@ -46,19 +46,23 @@
       <canvas type="webgl" id="Canvas" style="height: {{scrollViewHeight}}rpx"></canvas>
     </view>
     <!-- Bottom Control Tool Bar -->
-    <view>
-      <image class="image1" src="../../icon/icon-test45.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx; margin-left: 25rpx;"></image>
+    <view>      
+      <!-- Save Button -->
+      <image class="image1" src="../../icon/icon-test19.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx; margin-left: 15rpx;" catchtap="saveFigure"></image>
+      
+      <image class="image1" src="../../icon/icon-test45.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
       <image class="image1" src="../../icon/icon-test47.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
 
       <image class="image1" src="../../icon/add-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
       
-      <!-- Save Button -->
-      <image class="image1" src="../../icon/icon-test19.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
-      
+
       <image class="image1" src="../../icon/sami-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
 
       <image class="image1" src="../../icon/icon-test46.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
       <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
+      
+      <image class="image1" src="../../icon/icon-test16.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="saveFigureToFileSystem"></image>
+      
       <!-- <text>↑</text>
       <text>↓</text>
       <text>+</text>
@@ -68,4 +72,8 @@
       <text>→</text> -->
     </view>
     </view>
+</view>
+
+<view wx:if="{{saving}}">
+<canvas id="save"></canvas>
 </view>

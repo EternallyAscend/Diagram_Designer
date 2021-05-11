@@ -20,12 +20,14 @@ Page({
     desc: "",
     titlesHeight: 50,
     headBar: 100,
-    bottomBar: 100,
+    bottomBar: 90,
     windowWidth: 0,
     windowHeight: 0,
     navbarHeight: 0,
     headerHeight: 0,
     scrollViewHeight: 0,
+    saving: false,
+    imagePath: "",
   },
 
   readImage: function(id) {
@@ -141,6 +143,43 @@ Page({
       image: '../../icon/info_filled.png',
       title: this.data.desc,
     })
+  },
+
+  printSavedFigure: function() {
+    let cc = wx.createCanvasContext('save');
+    // Drawing Contents.
+
+    // Drawing Finish.
+    // cc.drawImage
+    // cc.draw
+    setTimeout(function() {
+      wx.canvasToTempFilePath({
+          canvasId: 'save',
+          success: function(res) {
+              that.setData({
+                  imagePath: res.tempFilePath,
+              });
+          },
+          fail: function(res) {
+              console.log(res);
+          }
+      });
+    }, 500);
+  },
+
+  saveFigureToFileSystem: function() {
+    printSavedFigure();
+    wx.saveImageToPhotosAlbum({
+        filePath: this.data.imagePath,
+        success(res) {
+            console.log('res', res);
+            wx.showToast({
+                title: 'Saved!',
+                icon: 'success',
+                duration: 3000
+            });
+        }
+    });
   },
 
   /**
