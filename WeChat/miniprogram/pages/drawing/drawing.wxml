@@ -1,3 +1,61 @@
 <!--miniprogram/pages/drawing/drawing.wxml-->
-<text>miniprogram/pages/drawing/drawing.wxml</text>
-<canvas type="webgl" id="Canvas"></canvas>
+<view>
+  <!-- Title -->
+  <view style="align-items:center;">{{name}}</view>
+  <!-- Main Body -->
+  <view>
+    <!-- Top Graph Tool Bar -->
+    <view>
+      <!-- <script src="/miniprogram/icon/icon.js">
+        <svg class="icon" aria-hidden="true">
+        
+        </svg>
+      </script>
+      <text class="icon-yuanjiaojuxing3" style="font-size:128rpx"/>
+      <text class="icon-lingxing" style="font-size:128rpx"/>
+      <text class="icon-tx-fill-pinghangsibianxing" style="font-size:128rpx"/>
+      <text class="icon-tx-fill-tuoyuanxing" style="font-size:128rpx"/>
+      <text class="icon-icon-test55" style="font-size:128rpx"/>
+      <text class="icon-A" style="font-size:128rpx"/>
+      <span class="icon-A" style="font-size:128rpx"></span> -->
+      <!-- <image src="/miniprogram/icon/icon-test2.svg" class='seat-img'></image> -->
+      <image class="image1" src="../../icon/R.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/tx-fill-pinghangsibianxing.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/lingxing.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/tx-fill-tuoyuanxing.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/icon-test55.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/icon-test11.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <!-- <text>□</text>
+      <text>▲</text>
+      <text>*</text>
+      <text>→</text>
+      <text>A</text>
+      <text>○</text>
+      <text>■</text> -->
+    </view>
+    <!-- Figure Area -->
+    <view>
+      <canvas type="webgl" id="Canvas"></canvas>
+    </view>
+    <!-- Bottom Control Tool Bar -->
+    <view>
+      <image class="image1" src="../../icon/icon-test45.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/icon-test47.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+
+      <image class="image1" src="../../icon/add-select.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/icon-test19.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/sami-select.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+
+      <image class="image1" src="../../icon/icon-test46.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: 100rpx; height:100rpx;"></image>
+      <!-- <text>↑</text>
+      <text>↓</text>
+      <text>+</text>
+      <text>○</text>
+      <text>-</text>
+      <text>←</text>
+      <text>→</text> -->
+    </view>
+    </view>
+</view>

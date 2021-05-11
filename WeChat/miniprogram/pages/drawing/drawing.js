@@ -16,21 +16,25 @@ Page({
     canvas: null,
     graphId: null,
     editable: true,
+    name: "",
+    desc: "",
   },
 
   readImage: function(id) {
-    console.log(id);
-    const db = wx.cloud.database()
+    const db = wx.cloud.database();
     db.collection('Graph').doc(id).get({
       success: res => {
+        wx.showToast({
+          title: res.data,
+        })
         if (res._id != app.globalData.openid) {
           db.collection("SharingMap").where({
             graph_id: id,
             user_id: app.globalData.openid,
           }).get({
-            success: res => {
+            success: resi => {
               this.setData({
-                editable: res.data.editable,
+                editable: resi.data.editable,
               });
             },
             fail: err => {
@@ -43,9 +47,14 @@ Page({
           })
         }
         this.setData({
-          patterns: res.data,
+          patterns: res.data.garp,
+          name: res.data.name,
+          desc: res.data.desc,
           // queryResult: JSON.stringify(res.data, null, 2)
         });
+        // wx.showToast({
+        //   title: res._id+"name"+res.name+"\n"+res.desc,
+        // });
       },
       fail: err => {
         wx.showToast({
@@ -83,7 +92,7 @@ Page({
       fail: err => {
         wx.showToast({
           icon: 'none',
-          title: 'title',
+          title: 'save failed title',
         })
       }
     })
@@ -164,15 +173,21 @@ Page({
       graphId: options.Image,
     });
     this.readImage(this.data.graphId);
-    wx.showToast({
-      title: this.data.patterns,
-    });
-    wx.showToast({
-      title: this.data.graphId,
-    })
+    console.log(this.data.name);
+    console.log(this.data.desc);
+
+    // wx.showToast({
+    //   title: this.data.patterns,
+    // });
+    // wx.showToast({
+    //   title: this.data.graphId,
+    // });
+    // wx.showToast({
+    //   title: this.data.name,
+    // });
 
     
-    this.saveFigure();
+    // this.saveFigure();
     // this.deleteFigure();
   },
 
