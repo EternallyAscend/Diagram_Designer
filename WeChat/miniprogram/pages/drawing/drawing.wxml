@@ -24,14 +24,16 @@
       <span class="icon-A" style="font-size:128rpx"></span> -->
       <!-- <image src="/miniprogram/icon/icon-test2.svg" class='seat-img'></image> -->
 
-      <image class="image1" src="../../icon/R.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; margin-left: 25rpx;"></image>
-      <image class="image1" src="../../icon/tx-fill-pinghangsibianxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;"></image>
-      <image class="image1" src="../../icon/lingxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;"></image>
-      <image class="image1" src="../../icon/tx-fill-tuoyuanxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;"></image>
-      <image class="image1" src="../../icon/icon-test55.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;"></image>
-      <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;"></image>
+      <image class="image1" src="../../icon/icon-test11.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; margin-left: 15rpx;" bindtap="setShapeType" data-type="{{SHAPE.SELECT}}"></image>
+      <image class="image1" src="../../icon/R.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.SQUARE}}"></image>
+      <image class="image1" src="../../icon/tx-fill-pinghangsibianxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.PARALLELOGRAM}}"></image>
+      <image class="image1" src="../../icon/lingxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.DIAMOND}}"></image>
+      <image class="image1" src="../../icon/tx-fill-tuoyuanxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ELLIPSE}}"></image>
+      <image class="image1" src="../../icon/icon-test55.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ARROW}}"></image>
+      <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.FONT}}"></image>
+      <image class="image1" src="../../icon/template_delete.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteElementSelected"></image>
+
       <!-- Select Button -->
-      <image class="image1" src="../../icon/icon-test11.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;"></image>
 
       <!-- <text>□</text>
       <text>▲</text>
@@ -50,16 +52,16 @@
       <!-- Save Button -->
       <image class="image1" src="../../icon/icon-test19.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx; margin-left: 15rpx;" catchtap="saveFigure"></image>
       
-      <image class="image1" src="../../icon/icon-test45.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
-      <image class="image1" src="../../icon/icon-test47.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
+      <image class="image1" src="../../icon/icon-test45.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="-1"></image>
+      <image class="image1" src="../../icon/icon-test47.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="1"></image>
 
       <image class="image1" src="../../icon/add-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
       
 
       <image class="image1" src="../../icon/sami-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
 
-      <image class="image1" src="../../icon/icon-test46.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
-      <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
+      <image class="image1" src="../../icon/icon-test46.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="-1"></image>
+      <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="1"></image>
       
       <image class="image1" src="../../icon/icon-test16.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="saveFigureToFileSystem"></image>
       

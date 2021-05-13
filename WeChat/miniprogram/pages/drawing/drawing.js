@@ -7,8 +7,17 @@ Page({
    * 页面的初始数据
    */
   data: {
+    SHAPE: {
+      SELECT: 0,
+      SQUARE: 1,
+      PARALLELOGRAM: 2,
+      DIAMOND: 3,
+      ELLIPSE: 4,
+      ARROW: 5,
+      FONT: 6,
+    },
     patterns: [],
-    paintMode: "select",
+    paintMode: 0, // SHAPE->SELECT
     boardScale: 1,
     boardX: 0,
     boardY: 0,
@@ -16,10 +25,10 @@ Page({
     canvas: null,
     graphId: null,
     editable: true,
-    name: "",
+    name: "Loading",
     desc: "",
     titlesHeight: 50,
-    headBar: 100,
+    headBar: 90,
     bottomBar: 90,
     windowWidth: 0,
     windowHeight: 0,
@@ -28,6 +37,11 @@ Page({
     scrollViewHeight: 0,
     saving: false,
     imagePath: "",
+    x: 0,
+    y: 0,
+    gap: 10,
+    zoom: 100,
+    selectedElement: null,
   },
 
   readImage: function(id) {
@@ -182,6 +196,17 @@ Page({
     });
   },
 
+  setShapeType: function(arg) {
+    this.setData({
+      paintMode: arg.currentTarget.dataset.type,
+      selectedElement: null,
+    });
+    // wx.showToast({
+    //   // title: this.data.paintMode,
+    //   title: ""+arg.currentTarget.dataset.type,
+    // })
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -233,7 +258,7 @@ Page({
     });
 
     // let scrollHeight = this.data.windowHeight - this.data.titlesHeight - this.data.headBar - this.data.bottomBar;
-    let scrollHeight = 750 / this.data.windowWidth * this.data.windowHeight - this.data.titlesHeight - this.data.headBar - this.data.bottomBar - 40;
+    let scrollHeight = 750 / this.data.windowWidth * this.data.windowHeight - this.data.titlesHeight - this.data.headBar - this.data.bottomBar - 45;
 
     this.setData({
         scrollViewHeight: scrollHeight
@@ -296,7 +321,39 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
+    wx.showShareMenu({
+      withShareTicket: true,
+    });
+  },
 
+  zoomIn: function() {
+
+  },
+
+  zoomOut: function() {
+
+  },
+
+  deleteElementSelected: function() {
+    if (this.data.selectedElement == null) {
+      wx.showToast({
+        icon: 'none',
+        image: '../../icon/info_filled.png',
+        title: 'Not selected.',
+      })
+    }
+  },
+
+  moveHorizon: function(arg) {
+    this.setData({
+      x: this.data.x + this.data.zoom * arg.currentTarget.dataset.step,
+    });
+  },
+
+  moveVertical: function(arg) {
+    this.setData({
+      y: this.data.y + this.data.zoom * arg.currentTarget.dataset.step,
+    });
   },
   
   createPattern: function(x, y, type) {
