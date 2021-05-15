@@ -30,6 +30,7 @@ Page({
       .exec((res)=>{
         this.canvas = res[0].node
       })
+    test()
   },
 
   /**
@@ -290,7 +291,7 @@ Page({
       else return (cor - this.boardY)*this.boardScale
     }
     if (obj.type == "arrow"){
-      var startX, startY, endX, endY, 
+      var startX, startY, endX, endY
       switch(obj.startDirection){
         case DIRECTION.UP:
           startX = obj.start.x
@@ -358,8 +359,8 @@ Page({
       ctx.fill()
     }
     else {
-      var objX = mapCor(obj.realX, AXE.X)
-      var objY = mapCor(obj.realY, AXE.Y)
+      var objX = mapCor(obj.realX - obj.width / 2, AXE.X)
+      var objY = mapCor(obj.realY - obj.height / 2, AXE.Y)
       if(obj.type == "rect") {
         ctx.strokeRect(objX, objY, obj.height*this.boardScale, obj.width*this.boardScale)
       }
@@ -382,5 +383,12 @@ Page({
       
     }
     drawAllObjects()
+  },
+
+  test: function(){
+    createPattern(20, 20, "rect")
+    createPattern(100, 100, "rect")
+    createText(20, 100, "abc")
+    createArrow(patterns[0], DIRECTION.RIGHT, patterns[1], DIRECTION.DOWN)
   }
 })
