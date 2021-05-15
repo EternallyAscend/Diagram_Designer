@@ -1,3 +1,81 @@
 <!--miniprogram/pages/drawing/drawing.wxml-->
-<text>miniprogram/pages/drawing/drawing.wxml</text>
-<canvas type="webgl" id="Canvas"></canvas>
+<view style="width: 100%;">
+  <!-- Title -->
+  <view style="height: 5rpx;"></view>
+  <view style="width: 100%; text-align: center;" catchtap="showDescription">
+    <text style="height: {{titlesHeight}}rpx; width: 100%; font-size: 50rpx; justify-content: center; align-items: center;">{{name}}</text>
+  </view>
+  <view style="background: #010101; width: 100%; height: 5rpx;"></view>
+  <!-- Main Body -->
+  <view>
+    <!-- Top Graph Tool Bar -->
+    <view>
+      <!-- <script src="/miniprogram/icon/icon.js">
+        <svg class="icon" aria-hidden="true">
+        
+        </svg>
+      </script>
+      <text class="icon-yuanjiaojuxing3" style="font-size:128rpx"/>
+      <text class="icon-lingxing" style="font-size:128rpx"/>
+      <text class="icon-tx-fill-pinghangsibianxing" style="font-size:128rpx"/>
+      <text class="icon-tx-fill-tuoyuanxing" style="font-size:128rpx"/>
+      <text class="icon-icon-test55" style="font-size:128rpx"/>
+      <text class="icon-A" style="font-size:128rpx"/>
+      <span class="icon-A" style="font-size:128rpx"></span> -->
+      <!-- <image src="/miniprogram/icon/icon-test2.svg" class='seat-img'></image> -->
+
+      <image class="image1" src="../../icon/icon-test11.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; margin-left: 15rpx;" bindtap="setShapeType" data-type="{{SHAPE.SELECT}}"></image>
+      <image class="image1" src="../../icon/R.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.SQUARE}}"></image>
+      <image class="image1" src="../../icon/tx-fill-pinghangsibianxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.PARALLELOGRAM}}"></image>
+      <image class="image1" src="../../icon/lingxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.DIAMOND}}"></image>
+      <image class="image1" src="../../icon/tx-fill-tuoyuanxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ELLIPSE}}"></image>
+      <image class="image1" src="../../icon/icon-test55.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ARROW}}"></image>
+      <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.FONT}}"></image>
+      <image class="image1" src="../../icon/template_delete.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteElementSelected"></image>
+
+      <!-- Select Button -->
+
+      <!-- <text>□</text>
+      <text>▲</text>
+      <text>*</text>
+      <text>→</text>
+      <text>A</text>
+      <text>○</text>
+      <text>■</text> -->
+    </view>
+    <!-- Figure Area -->
+    <view>
+      <canvas type="webgl" id="Canvas" style="height: {{scrollViewHeight}}rpx"></canvas>
+    </view>
+    <!-- Bottom Control Tool Bar -->
+    <view>      
+      <!-- Save Button -->
+      <image class="image1" src="../../icon/icon-test19.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx; margin-left: 15rpx;" catchtap="saveFigure"></image>
+      
+      <image class="image1" src="../../icon/icon-test45.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="-1"></image>
+      <image class="image1" src="../../icon/icon-test47.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="1"></image>
+
+      <image class="image1" src="../../icon/add-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
+      
+
+      <image class="image1" src="../../icon/sami-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
+
+      <image class="image1" src="../../icon/icon-test46.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="-1"></image>
+      <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="1"></image>
+      
+      <image class="image1" src="../../icon/icon-test16.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="saveFigureToFileSystem"></image>
+      
+      <!-- <text>↑</text>
+      <text>↓</text>
+      <text>+</text>
+      <text>○</text>
+      <text>-</text>
+      <text>←</text>
+      <text>→</text> -->
+    </view>
+    </view>
+</view>
+
+<view wx:if="{{saving}}">
+<canvas id="save"></canvas>
+</view>

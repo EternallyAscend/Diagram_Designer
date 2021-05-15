@@ -1,12 +1,23 @@
 // miniprogram/pages/drawing/drawing.js
+const app = getApp();
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
+    SHAPE: {
+      SELECT: 0,
+      SQUARE: 1,
+      PARALLELOGRAM: 2,
+      DIAMOND: 3,
+      ELLIPSE: 4,
+      ARROW: 5,
+      FONT: 6,
+    },
     patterns: [],
-    paintMode: "select",
+    paintMode: 0, // SHAPE->SELECT
     boardScale: 1,
     boardX: 0,
     boardY: 0,
@@ -18,6 +29,188 @@ Page({
       LEFT: 3,
       DOWN: 4,
     },
+    graphId: null,
+    editable: true,
+    name: "Loading",
+    desc: "",
+    titlesHeight: 50,
+    headBar: 90,
+    bottomBar: 90,
+    windowWidth: 0,
+    windowHeight: 0,
+    navbarHeight: 0,
+    headerHeight: 0,
+    scrollViewHeight: 0,
+    saving: false,
+    imagePath: "",
+    x: 0,
+    y: 0,
+    gap: 10,
+    zoom: 100,
+    selectedElement: null,
+  },
+
+  readImage: function(id) {
+    const db = wx.cloud.database();
+    db.collection('Graph').doc(id).get({
+      success: res => {
+        wx.showToast({
+          title: res.data,
+        })
+        if (res._id != app.globalData.openid) {
+          db.collection("SharingMap").where({
+            graph_id: id,
+            user_id: app.globalData.openid,
+          }).get({
+            success: resi => {
+              this.setData({
+                editable: resi.data.editable,
+              });
+            },
+            fail: err => {
+              wx.showToast({
+                icon: 'none',
+                title: 'No Auth.',
+              });
+              return;
+            },
+          })
+        }
+        this.setData({
+          patterns: res.data.garp,
+          name: res.data.name,
+          desc: res.data.desc,
+          // queryResult: JSON.stringify(res.data, null, 2)
+        });
+      },
+      fail: err => {
+        wx.showToast({
+          icon: 'none',
+          title: 'Open Failed.',
+        });
+        wx.navigateBack();
+      }
+    });
+  },
+
+  onGetOpenid: function() {
+    wx.cloud.callFunction({
+      name: 'login',
+      data: {},
+      success: res => {
+        app.globalData.openid = res.result.openid;
+      },
+      fail: err => {
+        console.error(err);
+      }
+    });
+  },
+
+  saveFigure: function() {
+    const db = wx.cloud.database();
+    db.collection('Graph').doc(this.data.graphId).update({
+      data: {
+        grap: this.data.patterns,
+        latest: new Date().toLocaleString(),
+      },
+      success: res => {
+        console.log(res);
+      },
+      fail: err => {
+        wx.showToast({
+          icon: 'none',
+          title: 'save failed title',
+        })
+      }
+    })
+  },
+
+  deleteFigure: function() {
+    if (this.data.graphId && this.data.editable) {
+      const db = wx.cloud.database()
+      db.collection('Graph').doc(this.data.graphId).remove({
+        success: res => {
+          wx.showToast({
+            title: 'Delete OK',
+          });
+          this.setData({
+            graphId: null,
+          });
+          wx.navigateBack({
+            delta: 1,
+          });
+          var pages = getCurrentPages();
+          var beforePage = pages[pages.length - 2];
+          beforePage.onLoad();
+        },
+        fail: err => {
+          wx.showToast({
+            icon: 'none',
+            title: 'Delete Failed.',
+          });
+        }
+      })
+    } else {
+      wx.showToast({
+        title: 'Not a Record.',
+      });
+    }
+  },
+
+  showDescription: function() {
+    wx.showToast({
+      icon: 'none',
+      image: '../../icon/info_filled.png',
+      title: this.data.desc,
+    })
+  },
+
+  printSavedFigure: function() {
+    let cc = wx.createCanvasContext('save');
+    // Drawing Contents.
+
+    // Drawing Finish.
+    // cc.drawImage
+    // cc.draw
+    setTimeout(function() {
+      wx.canvasToTempFilePath({
+          canvasId: 'save',
+          success: function(res) {
+              that.setData({
+                  imagePath: res.tempFilePath,
+              });
+          },
+          fail: function(res) {
+              console.log(res);
+          }
+      });
+    }, 500);
+  },
+
+  saveFigureToFileSystem: function() {
+    printSavedFigure();
+    wx.saveImageToPhotosAlbum({
+        filePath: this.data.imagePath,
+        success(res) {
+            console.log('res', res);
+            wx.showToast({
+                title: 'Saved!',
+                icon: 'success',
+                duration: 3000
+            });
+        }
+    });
+  },
+
+  setShapeType: function(arg) {
+    this.setData({
+      paintMode: arg.currentTarget.dataset.type,
+      selectedElement: null,
+    });
+    // wx.showToast({
+    //   // title: this.data.paintMode,
+    //   title: ""+arg.currentTarget.dataset.type,
+    // })
   },
 
   /**
@@ -31,6 +224,60 @@ Page({
         this.canvas = res[0].node
       })
     test()
+
+    if (null == app.globalData.openid) {
+      this.onGetOpenid();
+    }
+
+    // if (null == app.globalData.openid) {
+    //   wx.cloud.callFunction({
+    //     name: 'login',
+    //     data: {},
+    //     success: res => {
+    //       app.globalData.openid = res.result.openid;
+    //     },
+    //     fail: err => {
+    //       wx.showToast({
+    //         title: 'No Auth!',
+    //         icon: 'none',
+    //         image: '',
+    //         duration: 1500,
+    //         mask: false,
+    //         success: (result)=>{
+              
+    //         },
+    //         fail: ()=>{},
+    //         complete: ()=>{},
+    //       });
+    //     },
+    //   });
+    // }
+    
+    // Fetch System Information.
+    var that = this;
+    wx.getSystemInfo({
+      success: function(res) {
+        that.setData({
+          windowWidth: res.windowWidth,
+          windowHeight: res.windowHeight,
+        });
+      }
+    });
+
+    // let scrollHeight = this.data.windowHeight - this.data.titlesHeight - this.data.headBar - this.data.bottomBar;
+    let scrollHeight = 750 / this.data.windowWidth * this.data.windowHeight - this.data.titlesHeight - this.data.headBar - this.data.bottomBar - 45;
+
+    this.setData({
+        scrollViewHeight: scrollHeight
+    });
+
+    this.setData({
+      graphId: options.Image,
+    });
+    this.readImage(this.data.graphId);
+    
+    // this.saveFigure();
+    // this.deleteFigure();
   },
 
   /**
@@ -58,7 +305,9 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    // if (this.data.id) {
+    //   this.saveFigure();
+    // }
   },
 
   /**
@@ -79,7 +328,39 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
+    wx.showShareMenu({
+      withShareTicket: true,
+    });
+  },
 
+  zoomIn: function() {
+
+  },
+
+  zoomOut: function() {
+
+  },
+
+  deleteElementSelected: function() {
+    if (this.data.selectedElement == null) {
+      wx.showToast({
+        icon: 'none',
+        image: '../../icon/info_filled.png',
+        title: 'Not selected.',
+      })
+    }
+  },
+
+  moveHorizon: function(arg) {
+    this.setData({
+      x: this.data.x + this.data.zoom * arg.currentTarget.dataset.step,
+    });
+  },
+
+  moveVertical: function(arg) {
+    this.setData({
+      y: this.data.y + this.data.zoom * arg.currentTarget.dataset.step,
+    });
   },
   
   createPattern: function(x, y, type) {
