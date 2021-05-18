@@ -696,6 +696,13 @@ Page({
     drawAllObjects()
   },
 
+  editText: function(str){
+    if(this.data.selected){
+      if (this.data.selected.type == this.data.SHAPE.ARROW) return 
+      this.data.selected.text = str
+    }
+  },
+
   test: function(){
     //console.log(this.data.canvas)
     this.createPattern(20, 20, this.data.SHAPE.SQUARE)
