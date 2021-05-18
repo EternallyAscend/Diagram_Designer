@@ -30,7 +30,7 @@
       <image class="image1" src="../../icon/lingxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.DIAMOND}}"></image>
       <image class="image1" src="../../icon/tx-fill-tuoyuanxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ELLIPSE}}"></image>
       <image class="image1" src="../../icon/icon-test55.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ARROW}}"></image>
-      <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.FONT}}"></image>
+      <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.TEXT}}"></image>
       <image class="image1" src="../../icon/template_delete.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteElementSelected"></image>
 
       <!-- Select Button -->
@@ -45,7 +45,7 @@
     </view>
     <!-- Figure Area -->
     <view>
-      <canvas type="webgl" id="Canvas" style="height: {{scrollViewHeight}}rpx"></canvas>
+      <canvas type="2d" id="Canvas" style="height: {{scrollViewHeight}}rpx; width: {{windowWidth}}"></canvas>
     </view>
     <!-- Bottom Control Tool Bar -->
     <view>      
