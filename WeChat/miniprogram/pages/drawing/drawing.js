@@ -390,7 +390,7 @@ Page({
       realY: y,
       size: 14,
       type: this.data.SHAPE.TEXT,
-      content: text,
+      text: text,
       arrows: [],
     })
   },
@@ -573,6 +573,14 @@ Page({
     }
   },
 
+  drawSelection: function(ctx){
+    switch(ctx){
+      case this.data.SHAPE.SQUARE:
+      case this.data.SHAPE.TEXT:
+      case this.data.SHAPE.ARROW: 
+    }
+  },
+
   drawAllObjects: function(){
     const ctx = this.data.canvas.getContext("2d")
     console.log(ctx)
@@ -582,16 +590,17 @@ Page({
     }
   },
 
-  drawObject: function(obj, ctx){
+  drawObject: function(obj, ctx, selected=false){
     console.log(obj)
     const AXE = {X: true, Y: false}
-    // var mapCor = (cor, axe)=>{
-    //   if(axe) return (cor - this.data.boardX)*this.data.boardScale
-    //   else return (cor - this.data.boardY)*this.data.boardScale
-    // }
-    var mapCor = (x, y) => {
-      return x
+    var mapCor = (cor, axe)=>{
+      if(axe) return (cor - this.data.boardX)*this.data.boardScale
+      else return (cor - this.data.boardY)*this.data.boardScale
     }
+    if(selected) setLineDash([2,2])
+    // var mapCor = (x, y) => {
+    //   return x
+    // }
     if (obj.type == this.data.SHAPE.ARROW){
       var startX, startY, endX, endY
       switch(obj.startDirection){
@@ -674,10 +683,13 @@ Page({
         console.log(obj.height*this.data.boardScale)
       }
       else if(obj.type == this.data.SHAPE.TEXT) {
-        var objX = mapCor(obj.realX, AXE.X)
-        var objY = mapCor(obj.realY, AXE.Y)
+        var objX = mapCor(obj.realX - ctx.measureText(obj.text).width / 2, AXE.X)
+        var objY = mapCor(obj.realY + obj.size / 2, AXE.Y)
+        if(selected){
+          ctx.strokeRect(objX, mapCor(obj.realY - obj.size / 2, AXE.Y))
+        }
         //ctx.font = obj.size + "px SimHei"
-        ctx.fillText(obj.content, objX, objY)
+        ctx.fillText(obj.text, objX, objY)
         //ctx.draw()
       }
     }
