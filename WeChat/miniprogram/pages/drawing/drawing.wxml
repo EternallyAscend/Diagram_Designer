@@ -1,5 +1,5 @@
 <!--miniprogram/pages/drawing/drawing.wxml-->
-<view style="width: 100%;">
+<view style="width: 100%;" wx:if="{{!texts}}">
   <!-- Title -->
   <view style="height: 5rpx;"></view>
   <view style="width: 100%; text-align: center;" catchtap="showDescription">
@@ -45,7 +45,7 @@
     </view>
     <!-- Figure Area -->
     <view>
-      <canvas type="2d" id="Canvas" style="height: {{scrollViewHeight}}rpx; width: {{windowWidth}}"></canvas>
+      <canvas type="2d" id="Canvas" style="height: {{scrollViewHeight}}rpx; width: {{windowWidth}}" bindtap="onTouchCanvas"></canvas>
     </view>
     <!-- Bottom Control Tool Bar -->
     <view>      
@@ -78,4 +78,12 @@
 
 <view wx:if="{{saving}}">
 <canvas id="save"></canvas>
+</view>
+
+<view wx:if='{{texts}}' style="width:100%; height: {{windowHeight}}px; min-height: 100%;  display:flex; align-items: center; justify-content: center; text-align: center;">
+  <view>
+  <input placeholder="Please input content" bindinput="setContent"></input>
+  <view><button catchtap="createTexts">Confirm</button></view>
+  <view><button catchtap="cancelCreateTexts">Cancel</button></view>
+  </view>
 </view>
