@@ -638,13 +638,13 @@ Page({
     }
   },
 
-  drawSelection: function(ctx){
-    switch(ctx){
-      case this.data.SHAPE.SQUARE:
-      case this.data.SHAPE.TEXT:
-      case this.data.SHAPE.ARROW: 
-    }
-  },
+  // drawSelection: function(ctx){
+  //   switch(ctx){
+  //     case this.data.SHAPE.SQUARE:
+  //     case this.data.SHAPE.TEXT:
+  //     case this.data.SHAPE.ARROW: 
+  //   }
+  // },
 
   drawAllObjects: function(){
     const ctx = this.data.canvas.getContext("2d")
@@ -740,14 +740,14 @@ Page({
       ctx.fill()
     }
     else {
-      if(obj.type == this.data.SHAPE.SQUARE) {
+      if (obj.type == this.data.SHAPE.SQUARE) {
         var objX = mapCor(obj.realX - obj.width / 2, AXE.X)
         var objY = mapCor(obj.realY - obj.height / 2, AXE.Y)
         ctx.strokeRect(objX, objY, obj.width*this.data.boardScale, obj.height*this.data.boardScale)
         console.log(obj.width*this.data.boardScale)
         console.log(obj.height*this.data.boardScale)
       }
-      else if(obj.type == this.data.SHAPE.TEXT) {
+      else if (obj.type == this.data.SHAPE.TEXT) {
         var objX = mapCor(obj.realX - ctx.measureText(obj.text).width / 2, AXE.X)
         var objY = mapCor(obj.realY + obj.size / 2, AXE.Y)
         if(selected){
@@ -756,6 +756,37 @@ Page({
         //ctx.font = obj.size + "px SimHei"
         ctx.fillText(obj.text, objX, objY)
         //ctx.draw()
+      }
+      else if (obj.type == this.data.SHAPE.DIAMOND) {
+        ctx.beginPath()
+        ctx.moveTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY, AXE.Y))
+        ctx.lineTo(mapCor(obj.realX , AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
+        ctx.lineTo(mapCor(obj.realX + obj.width / 2, AXE.X), mapCor(obj.realY, AXE.Y))
+        ctx.lineTo(mapCor(obj.realX , AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
+        ctx.closePath()
+        ctx.stroke()
+      }
+      else if (obj.type == this.data.SHAPE.PARALLELOGRAM) {
+        ctx.beginPath()
+        ctx.moveTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
+        ctx.lineTo(mapCor(obj.realX + obj.width / 4, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
+        ctx.lineTo(mapCor(obj.realX + obj.width / 2, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
+        ctx.lineTo(mapCor(obj.realX - obj.width / 4, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
+        ctx.closePath()
+        ctx.stroke()
+      }
+      else if (obj.type == this.data.SHAPE.ELLIPSE) {
+        ctx.save()
+        ctx.beginPath()
+        ctx.moveTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY, AXE.Y))
+        const d = obj.width > obj.height ? obj.width : obj.height
+        const radioX = obj.width / d  //* this.data.boardScale
+        const radioY = obj.height / d  //* this.data.boardScale
+        ctx.scale(radioX, radioY)
+        ctx.arc(mapCor(obj.realX / radioX, AXE.X), mapCor(obj.realY / radioY, AXE.Y), d / 2, 0, Math.PI * 2)
+        ctx.closePath()
+        ctx.restore()
+        ctx.stroke()
       }
     }
   },
