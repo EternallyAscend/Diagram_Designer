@@ -726,13 +726,26 @@ Page({
         ctx.closePath()
         ctx.stroke()
       }
-      else if (obj.type == this.data.SHAPE.ELLIPSE) {
+      else if (obj.type == this.data.SHAPE.PARALLELOGRAM) {
         ctx.beginPath()
         ctx.moveTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
         ctx.lineTo(mapCor(obj.realX + obj.width / 4, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
         ctx.lineTo(mapCor(obj.realX + obj.width / 2, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
         ctx.lineTo(mapCor(obj.realX - obj.width / 4, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
         ctx.closePath()
+        ctx.stroke()
+      }
+      else if (obj.type == this.data.SHAPE.ELLIPSE) {
+        ctx.save()
+        ctx.beginPath()
+        ctx.moveTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY, AXE.Y))
+        const d = obj.width > obj.height ? obj.width : obj.height
+        const radioX = obj.width / d  //* this.data.boardScale
+        const radioY = obj.height / d  //* this.data.boardScale
+        ctx.scale(radioX, radioY)
+        ctx.arc(mapCor(obj.realX / radioX, AXE.X), mapCor(obj.realY / radioY, AXE.Y), d / 2, 0, Math.PI * 2)
+        ctx.closePath()
+        ctx.restore()
         ctx.stroke()
       }
     }
