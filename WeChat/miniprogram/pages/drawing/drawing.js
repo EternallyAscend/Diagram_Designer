@@ -36,8 +36,8 @@ Page({
     name: "Loading",
     desc: "",
     titlesHeight: 50,
-    headBar: 90,
-    bottomBar: 90,
+    headBar: 80,
+    bottomBar: 80,
     windowWidth: 0,
     windowHeight: 0,
     navbarHeight: 0,
@@ -131,30 +131,64 @@ Page({
   },
 
   deleteFigure: function() {
-    if (this.data.graphId && this.data.editable) {
-      const db = wx.cloud.database()
-      db.collection('Graph').doc(this.data.graphId).remove({
-        success: res => {
-          wx.showToast({
-            title: 'Delete OK',
-          });
-          this.setData({
-            graphId: null,
-          });
-          wx.navigateBack({
-            delta: 1,
-          });
-          var pages = getCurrentPages();
-          var beforePage = pages[pages.length - 2];
-          beforePage.onLoad();
+    if (((this.data.graphId != null) && this.data.editable)) {
+    // wx.showModal({
+    //   title: ""+this.data.graphId,
+    //   content: ""+((this.data.graphId != null) && this.data.editable),
+    //   cancelColor: 'cancelColor',
+    // })
+    
+      wx.showModal({
+        title: 'Remove',
+        content: 'Confirm Delete This Image?',
+        showCancel: true,
+        cancelText: 'Cancel',
+        cancelColor: '#000000',
+        confirmText: 'Confirm',
+        confirmColor: '#3CC51F',
+        success: (result) => {
+          if(result.confirm){
+            wx.showToast({
+              title: 'OK',
+            })
+            const db = wx.cloud.database()
+            db.collection('Graph').doc(this.data.graphId).remove({
+              success: res => {
+                wx.showToast({
+                  title: 'Delete OK',
+                });
+                this.setData({
+                  graphId: null,
+                });
+                wx.navigateBack({
+                  delta: 1,
+                });
+                var pages = getCurrentPages();
+                var beforePage = pages[pages.length - 2];
+                beforePage.onLoad();
+              },
+              fail: err => {
+                wx.showToast({
+                  icon: 'none',
+                  title: 'Delete Failed.',
+                });
+              }
+            })
+          } else {
+            wx.showToast({
+              title: 'Else',
+            })
+            return;
+          }
         },
-        fail: err => {
+        fail: ()=>{
           wx.showToast({
-            icon: 'none',
-            title: 'Delete Failed.',
-          });
-        }
-      })
+            title: 'Failed',
+          })
+          return;
+        },
+        complete: ()=>{}
+      });
     } else {
       wx.showToast({
         title: 'Not a Record.',
@@ -333,16 +367,18 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-
+    if (this.data.id) {
+      this.saveFigure();
+    }
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    // if (this.data.id) {
-    //   this.saveFigure();
-    // }
+    if (this.data.id) {
+      this.saveFigure();
+    }
   },
 
   /**
@@ -366,6 +402,10 @@ Page({
     wx.showShareMenu({
       withShareTicket: true,
     });
+  },
+
+  originFigure: function () {
+    
   },
 
   zoomIn: function() {

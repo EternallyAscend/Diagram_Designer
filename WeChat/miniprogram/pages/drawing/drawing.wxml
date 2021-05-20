@@ -32,6 +32,7 @@
       <image class="image1" src="../../icon/icon-test55.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ARROW}}"></image>
       <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.TEXT}}"></image>
       <image class="image1" src="../../icon/template_delete.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteElementSelected"></image>
+      <image class="image1" src="../../icon/template_delete.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteFigure"></image>
 
       <!-- Select Button -->
 
@@ -55,10 +56,11 @@
       <image class="image1" src="../../icon/icon-test45.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="-1"></image>
       <image class="image1" src="../../icon/icon-test47.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="1"></image>
 
-      <image class="image1" src="../../icon/add-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
+      <image class="image1" src="../../icon/add-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="zoomIn"></image>
       
+      <image class="image1" src="../../icon/icon-test5.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="originFigure"></image>
 
-      <image class="image1" src="../../icon/sami-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;"></image>
+      <image class="image1" src="../../icon/sami-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="zoomOut"></image>
 
       <image class="image1" src="../../icon/icon-test46.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="-1"></image>
       <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="1"></image>
