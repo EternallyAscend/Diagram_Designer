@@ -14,7 +14,7 @@ Page({
       DIAMOND: 3,
       ELLIPSE: 4,
       ARROW: 5,
-      FONT: 6,
+      TEXT: 6,
     },
     patterns: [],
     paintMode: 0, // SHAPE->SELECT
@@ -217,14 +217,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const query = wx.createSelectorQuery();
-    query.select("#canvas")
-      .fields({node: true, size: true})
-      .exec((res)=>{
-        this.canvas = res[0].node
-      })
-    test()
-
     if (null == app.globalData.openid) {
       this.onGetOpenid();
     }
@@ -278,6 +270,24 @@ Page({
     
     // this.saveFigure();
     // this.deleteFigure();
+
+    
+    const query = wx.createSelectorQuery();
+    query.select("#Canvas")
+      .fields({node: true, size: true})
+      .exec((res)=>{
+        // this.data.canvas = res[0].node
+        this.setData({
+          canvas: res[0].node
+        })
+        this.data.canvas.width = this.data.windowWidth.toString()
+        this.data.canvas.height = (this.data.scrollViewHeight*this.data.windowWidth/750).toString()
+        this.test()
+        // console.log(res[0])
+        // console.log(res[0].node)
+        // console.log(this.data.canvas)
+      })
+
   },
 
   /**
@@ -364,39 +374,42 @@ Page({
   },
   
   createPattern: function(x, y, type) {
-    this.patterns.push({
+    this.data.patterns.push({
       realX: x,
       realY: y,
-      height: 100,
-      width: 150,
+      height: 50,
+      width: 80,
       type: type,
       arrows: [],
     })
   },
 
   createText: function(x, y, text) {
-    this.patterns.push({
+    this.data.patterns.push({
       realX: x,
       realY: y,
       size: 14,
-      type: "text",
-      content: text,
+      type: this.data.SHAPE.TEXT,
+      text: text,
+      arrows: [],
     })
   },
 
   createArrow: function(start, end, startDirection, endDirection){
-    var arrow = adjustArrow({
+    var arrow = this.adjustArrow({
       start: start,
       startDirection: startDirection,
       end: end,
       endDirection: endDirection,
-      type: "text",
+      type: this.data.SHAPE.ARROW,
       path: [],
     })
+    console.log(start)
+    console.log(end)
     start.arrows.push({arrow, startDirection})
     end.arrows.push({arrow, endDirection})
-    adjustArrow(arrow)
-    this.patterns.push(arrow)
+    //this.adjustArrow(arrow)
+    this.data.patterns.push(arrow)
   },
 
   getCorner: function (a, b){
@@ -442,10 +455,11 @@ Page({
     left = (arrow.start.realX - arrow.start.width / 2) < (arrow.end.realX - arrow.end.width / 2)
     up = (arrow.start.realY - arrow.start.height / 2) < (arrow.end.realY - arrow.end.height / 2)
     var parellel = !((arrow.startDirection + arrow.endDirection) % 2)                       // 起始方向与末尾方向平行
-    var startOut = (left?arrow.startDirection == DIRECTION.LEFT:arrow.startDirection == DIRECTION.RIGHT) ||
-      (up?arrow.startDirection == DIRECTION.UP:arrow.startDirection == DIRECTION.DOWN)      // 起始方向内\外
-    var endOut = (left?arrow.endDirection == DIRECTION.LEFT:arrow.endDirection == DIRECTION.RIGHT) ||
-      (up?arrow.endDirection == DIRECTION.UP:arrow.endDirection == DIRECTION.DOWN)          // 末尾方向内\外
+    var startOut = (left?arrow.startDirection == this.data.DIRECTION.LEFT:arrow.startDirection == this.data.DIRECTION.RIGHT) ||
+      (up?arrow.startDirection == this.data.DIRECTION.UP:arrow.startDirection == this.data.DIRECTION.DOWN)      // 起始方向内\外
+    var endOut = (left?arrow.endDirection == this.data.DIRECTION.RIGHT:arrow.endDirection == this.data.DIRECTION.LEFT) ||
+      (up?arrow.endDirection == this.data.DIRECTION.DOWN:arrow.endDirection == this.data.DIRECTION.UP)          // 末尾方向内\外
+    var grid = this.getArrowGrid(arrow, left, up)
     var isTransfered = !(arrow.startDirection % 2)                                          // 斜对称
     var trans = (x, y)=>{
       if(isTransfered){
@@ -454,7 +468,6 @@ Page({
       else return {x: grid.horizon[x], y: grid.vertical[y]}
     }
 
-    var grid = getArrowGrid(vertical, horizon, arrow, left, up)
     
     if(startOut){
       arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTERSTART))
@@ -501,9 +514,10 @@ Page({
         }
       }
     }
+    return arrow
   },
 
-  getArrowGrid(vertical, horizon, arrow, left, up){
+  getArrowGrid(arrow, left, up){
     var horizon = [arrow.start.realX - arrow.start.width/2 - 10, arrow.start.realX, arrow.start.realX + arrow.start.width/2 + 10]
     var tail = [arrow.end.realX - arrow.end.width/2 - 10, arrow.end.realX, arrow.end.realX + arrow.end.width/2 + 10]
     if(!left) {
@@ -511,7 +525,7 @@ Page({
       tail.reverse()
     }
     horizon.push((arrow.start.realX + arrow.end.realX) / 2)
-    horizon.splice(4, 0, tail)
+    horizon.splice(4, 0, ...tail)
 
     var vertical = [arrow.start.realY - arrow.start.height/2 - 10, arrow.start.realY, arrow.start.realY + arrow.start.height/2 + 10]
     tail = [arrow.end.realY - arrow.end.height/2 - 10, arrow.end.realY, arrow.end.realY + arrow.end.height/2 + 10]
@@ -520,8 +534,10 @@ Page({
       tail.reverse()
     }
     vertical.push((arrow.start.realY + arrow.end.realY) / 2)
-    vertical.splice(4, 0, tail)
+    vertical.splice(4, 0, ...tail)
 
+    console.log(horizon)
+    console.log(vertical)
     return {horizon: horizon, vertical: vertical}
 
     // horizon.push(left?arrow.start.x - arrow.start.width/2 - 10:arrow.start.x + arrow.start.width/2 + 10)
@@ -542,134 +558,169 @@ Page({
   },
 
   selectObject: function(x, y){
-    var selectedIndex = this.patterns.findIndex((value, index, array)=>{
+    var selectedIndex = this.data.patterns.findIndex((value, index, array)=>{
       return x > value.realX 
         && x < value.realX + value.width
         && y > value.realY
         && y < value.realY + value.height
     })
     if (selectedIndex==-1){
-      this.selected = null
+      this.data.selected = null
     }
     else{
-      this.patterns.push(this.patterns.splice(selectedIndex, 1)[0])
-      this.selected = this.patterns[this.patterns.length - 1]
+      this.data.patterns.push(this.data.patterns.splice(selectedIndex, 1)[0])
+      this.data.selected = this.data.patterns[this.data.patterns.length - 1]
+    }
+  },
+
+  drawSelection: function(ctx){
+    switch(ctx){
+      case this.data.SHAPE.SQUARE:
+      case this.data.SHAPE.TEXT:
+      case this.data.SHAPE.ARROW: 
     }
   },
 
   drawAllObjects: function(){
-    const ctx = this.canvas.getContext("2d")
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    for(var i = 0; i < this.patterns.length; i++){
-      drawObject(this.patterns[i], ctx)
+    const ctx = this.data.canvas.getContext("2d")
+    console.log(ctx)
+    ctx.clearRect(0, 0, this.data.canvas.width, this.data.canvas.height)
+    for(var i = 0; i < this.data.patterns.length; i++){
+      this.drawObject(this.data.patterns[i], ctx)
     }
   },
 
-  drawObject: function(obj, ctx){
+  drawObject: function(obj, ctx, selected=false){
+    console.log(obj)
     const AXE = {X: true, Y: false}
-    var mapCor = (x, y)=>{
-      if(axe) return (cor - this.boardX)*this.boardScale
-      else return (cor - this.boardY)*this.boardScale
+    var mapCor = (cor, axe)=>{
+      if(axe) return (cor - this.data.boardX)*this.data.boardScale
+      else return (cor - this.data.boardY)*this.data.boardScale
     }
-    if (obj.type == "arrow"){
+    if(selected) setLineDash([2,2])
+    // var mapCor = (x, y) => {
+    //   return x
+    // }
+    if (obj.type == this.data.SHAPE.ARROW){
       var startX, startY, endX, endY
       switch(obj.startDirection){
-        case DIRECTION.UP:
-          startX = obj.start.x
+        case this.data.DIRECTION.UP:
+          startX = obj.start.realX
           startY = obj.start.realY + obj.start.height / 2
           break
-        case DIRECTION.DOWN:
-          startX = obj.start.x
+        case this.data.DIRECTION.DOWN:
+          startX = obj.start.realX
           startY = obj.start.realY - obj.start.height / 2
           break
-        case DIRECTION.LEFT:
-          startX = obj.start.x - obj.start.width / 2
-          startY = obj.start.y
+        case this.data.DIRECTION.LEFT:
+          startX = obj.start.realX - obj.start.width / 2
+          startY = obj.start.realY
           break
-        case DIRECTION.UP:
-          startX = obj.start.x + obj.start.width / 2
-          startY = obj.start.y
+        case this.data.DIRECTION.RIGHT:
+          startX = obj.start.realX + obj.start.width / 2
+          startY = obj.start.realY
           break
       }
       switch(obj.endDirection){
-        case DIRECTION.UP:
-          endX = obj.end.x
+        case this.data.DIRECTION.UP:
+          endX = obj.end.realX
           endY = obj.end.realY + obj.end.height / 2
           break
-        case DIRECTION.DOWN:
-          endX = obj.end.x
+        case this.data.DIRECTION.DOWN:
+          endX = obj.end.realX
           endY = obj.end.realY - obj.end.height / 2
           break
-        case DIRECTION.LEFT:
-          endX = obj.end.x - obj.end.width / 2
-          endY = obj.end.y
+        case this.data.DIRECTION.LEFT:
+          endX = obj.end.realX - obj.end.width / 2
+          endY = obj.end.realY
           break
-        case DIRECTION.UP:
-          endX = obj.end.x + obj.end.width / 2
-          endY = obj.end.y
+        case this.data.DIRECTION.RIGHT:
+          endX = obj.end.realX + obj.end.width / 2
+          endY = obj.end.realY
           break
       }
+      //console.log("an arrow")
       ctx.beginPath()
       ctx.moveTo(mapCor(startX, AXE.X), mapCor(startY, AXE.Y))
-      for(point in obj.path){
-        ctx.lineTo(mapCor(point.x, AXE.X), mapCor(point.y, AXE.Y))
+      console.log(startX, startY)
+      for(var point = 0; point < obj.path.length; point++){
+        ctx.lineTo(mapCor(obj.path[point].x, AXE.X), mapCor(obj.path[point].y, AXE.Y))
+        console.log(obj.path[point])
       }
-      ctx.lineTo(mapCor(startX, AXE.X), mapCor(startY, AXE.Y))
+      ctx.lineTo(mapCor(endX, AXE.X), mapCor(endY, AXE.Y))
+      console.log(endX, endY)
       ctx.stroke()
+      //ctx.draw()
       ctx.beginPath()
-      ctx.moveTo(mapCor(end))
+      ctx.moveTo(mapCor(endX, AXE.X), mapCor(endY, AXE.Y))
       switch(obj.endDirection){
-        case DIRECTION.UP:
-          ctx.lineTo(mapCor(endX - 2, endY - 3))
-          ctx.lineTo(mapCor(endX + 2, endY - 3))
+        case this.data.DIRECTION.UP:
+          ctx.lineTo(mapCor(endX - 2, AXE.X), mapCor(endY - 3, AXE.Y))
+          ctx.lineTo(mapCor(endX + 2, AXE.X), mapCor(endY - 3, AXE.Y))
           break
-        case DIRECTION.DOWN:
-          ctx.lineTo(mapCor(endX - 2, endY + 3))
-          ctx.lineTo(mapCor(endX + 2, endY + 3))
+        case this.data.DIRECTION.DOWN:
+          ctx.lineTo(mapCor(endX - 2, AXE.X), mapCor(endY + 3, AXE.Y))
+          ctx.lineTo(mapCor(endX + 2, AXE.X), mapCor(endY + 3, AXE.Y))
           break
-        case DIRECTION.RIGHT:
-          ctx.lineTo(mapCor(endX - 3, endY + 2))
-          ctx.lineTo(mapCor(endX - 3, endY - 2))
+        case this.data.DIRECTION.RIGHT:
+          ctx.lineTo(mapCor(endX + 3, AXE.X), mapCor(endY - 2, AXE.Y))
+          ctx.lineTo(mapCor(endX + 3, AXE.X), mapCor(endY + 2, AXE.Y))
           break
-        case DIRECTION.LEFT:  
-          ctx.lineTo(mapCor(endX + 3, endY + 2))
-          ctx.lineTo(mapCor(endX + 3, endY - 2))
+        case this.data.DIRECTION.LEFT:  
+          ctx.lineTo(mapCor(endX - 3, AXE.X), mapCor(endY + 2, AXE.Y))
+          ctx.lineTo(mapCor(endX - 3, AXE.X), mapCor(endY - 2, AXE.Y))
           break
       }
       ctx.closePath()
       ctx.fill()
     }
     else {
-      var objX = mapCor(obj.realX - obj.width / 2, AXE.X)
-      var objY = mapCor(obj.realY - obj.height / 2, AXE.Y)
-      if(obj.type == "rect") {
-        ctx.strokeRect(objX, objY, obj.height*this.boardScale, obj.width*this.boardScale)
+      if(obj.type == this.data.SHAPE.SQUARE) {
+        var objX = mapCor(obj.realX - obj.width / 2, AXE.X)
+        var objY = mapCor(obj.realY - obj.height / 2, AXE.Y)
+        ctx.strokeRect(objX, objY, obj.width*this.data.boardScale, obj.height*this.data.boardScale)
+        console.log(obj.width*this.data.boardScale)
+        console.log(obj.height*this.data.boardScale)
       }
-      else if(obj.type == "text") {
-        ctx.font = obj.size + "px SimHei"
-        ctx.fillText(obj.content, objX, objY)
+      else if(obj.type == this.data.SHAPE.TEXT) {
+        var objX = mapCor(obj.realX - ctx.measureText(obj.text).width / 2, AXE.X)
+        var objY = mapCor(obj.realY + obj.size / 2, AXE.Y)
+        if(selected){
+          ctx.strokeRect(objX, mapCor(obj.realY - obj.size / 2, AXE.Y))
+        }
+        //ctx.font = obj.size + "px SimHei"
+        ctx.fillText(obj.text, objX, objY)
+        //ctx.draw()
       }
     }
-      
   },
 
   onTouchCanvas: function(event){
-    switch(this.paintMode){
-      case "select":
-        this.selectObject(event.touches[0].pageX - this.canvas.left, event.touches[0].pageY - canvas.top)
+    switch(this.data.paintMode){
+      case this.data.SHAPE.SELECT:
+        this.selectObject(event.touches[0].pageX - this.data.canvas.left, event.touches[0].pageY - this.data.canvas.top)
         break
-      case "rect":
-        this.createPattern(event.touches[0].pageX - this.canvas.left, event.touches[0].pageY - canvas.top, this.paintMode)
+      case this.data.SHAPE.SQUARE:
+        this.createPattern(event.touches[0].pageX - this.data.canvas.left, event.touches[0].pageY - this.data.canvas.top, this.data.paintMode)
         break
       
     }
     drawAllObjects()
   },
 
+  editText: function(str){
+    if(this.data.selected){
+      if (this.data.selected.type == this.data.SHAPE.ARROW) return 
+      this.data.selected.text = str
+    }
+  },
+
   test: function(){
-    createPattern(20, 20, "rect")
-    createPattern(100, 100, "rect")
-    createText(20, 100, "abc")
-    createArrow(patterns[0], DIRECTION.RIGHT, patterns[1], DIRECTION.DOWN)
+    //console.log(this.data.canvas)
+    this.createPattern(20, 20, this.data.SHAPE.SQUARE)
+    this.createPattern(100, 100, this.data.SHAPE.SQUARE)
+    this.createText(20, 100, "abc")
+    this.createArrow(this.data.patterns[0], this.data.patterns[1], this.data.DIRECTION.RIGHT, this.data.DIRECTION.LEFT)
+    this.drawAllObjects()
   }
 })
