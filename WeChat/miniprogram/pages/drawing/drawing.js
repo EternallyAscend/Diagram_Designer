@@ -31,6 +31,8 @@ Page({
     },
     graphId: null,
     editable: true,
+    texts: false,
+    // textContent: "",
     name: "Loading",
     desc: "",
     titlesHeight: 50,
@@ -58,23 +60,26 @@ Page({
           title: res.data,
         })
         if (res._id != app.globalData.openid) {
-          db.collection("SharingMap").where({
-            graph_id: id,
-            user_id: app.globalData.openid,
-          }).get({
-            success: resi => {
-              this.setData({
-                editable: resi.data.editable,
-              });
-            },
-            fail: err => {
-              wx.showToast({
-                icon: 'none',
-                title: 'No Auth.',
-              });
-              return;
-            },
+          this.setData({
+            editable: false,
           })
+          // db.collection("SharingMap").where({
+          //   graph_id: id,
+          //   user_id: app.globalData.openid,
+          // }).get({
+          //   success: resi => {
+          //     this.setData({
+          //       editable: resi.data.editable,
+          //     });
+          //   },
+          //   fail: err => {
+          //     wx.showToast({
+          //       icon: 'none',
+          //       title: 'No Auth.',
+          //     });
+          //     return;
+          //   },
+          // })
         }
         this.setData({
           patterns: res.data.garp,
@@ -288,6 +293,26 @@ Page({
         // console.log(this.data.canvas)
       })
 
+  },
+
+  setContent: function(arg) {
+    this.setData({
+      text: arg.detail.value,
+    })
+  },
+
+  createTexts: function() {
+    this.setData({
+      texts: false,
+      text: "",
+    })
+  },
+
+  cancelCreateTexts: function() {
+    this.setData({
+      texts: false,
+      text: "",
+    })
   },
 
   /**
@@ -695,7 +720,25 @@ Page({
     }
   },
 
+
   onTouchCanvas: function(event){
+    this.setData({
+      texts: true,
+    })
+    console.log(event)
+    wx.showToast({
+      title: 'title',
+    })
+    wx.onTouchStart(
+
+    )
+    wx.onTouchMove()
+    wx.onTouchEnd()
+    wx.offTouchStart(
+
+    )
+    wx.offTouchMove()
+    wx.offTouchEnd()
     switch(this.data.paintMode){
       case this.data.SHAPE.SELECT:
         this.selectObject(event.touches[0].pageX - this.data.canvas.left, event.touches[0].pageY - this.data.canvas.top)
