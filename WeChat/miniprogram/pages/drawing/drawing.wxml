@@ -78,7 +78,7 @@
     </view>
 </view>
 
-<view wx:if="{{saving}}">
+<view hidden="1">
 <canvas id="save"></canvas>
 </view>
 

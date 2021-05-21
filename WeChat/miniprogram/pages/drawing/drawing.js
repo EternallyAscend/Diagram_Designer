@@ -43,13 +43,12 @@ Page({
     navbarHeight: 0,
     headerHeight: 0,
     scrollViewHeight: 0,
-    saving: false,
+    saving: null,
     imagePath: "",
     x: 0,
     y: 0,
     gap: 10,
     zoom: 100,
-    selectedElement: null,
   },
 
   arrow_drawing_cache: {
@@ -215,12 +214,65 @@ Page({
   },
 
   printSavedFigure: function() {
-    let cc = wx.createCanvasContext('save');
+    // let cc = wx.createCanvasContext('save');
     // Drawing Contents.
 
     // Drawing Finish.
     // cc.drawImage
     // cc.draw
+    if (this.data.patterns == []) {
+      wx.showToast({
+        title: 'Empty Figure',
+      })
+      return;
+    }
+
+    var t = 0;
+    var b = 0;
+    var l = 0;
+    var r = 0;
+    for(var i = 0; i < this.data.patterns.length; i++){
+      t = t > this.data.patterns[i].realY - this.data.patterns[i].height / 2 ? this.data.patterns[i].realY - this.data.patterns[i].height / 2 : t
+      b = b < this.data.patterns[i].realY + this.data.patterns[i].height / 2 ? this.data.patterns[i].realY + this.data.patterns[i].height / 2 : b
+      l = l > this.data.patterns[i].realX - this.data.patterns[i].width / 2 ? this.data.patterns[i].realX - this.data.patterns[i].width / 2 : l
+      r = r < this.data.patterns[i].realX + this.data.patterns[i].width / 2 ? this.data.patterns[i].realX + this.data.patterns[i].width / 2 : r
+    }
+    var oldX = this.data.boardX;
+    var oldY = this.data.boardY;
+    var oldS = this.data.boardScale;
+
+    const query = wx.createSelectorQuery();
+    query.select("#save")
+      .fields({node: true, size: true})
+      .exec((res)=>{
+        // this.data.canvas = res[0].node
+        this.setData({
+          saving: res[0].node,
+          boardX: r - l,
+          boardY: b - t,
+          boardScale: 1,
+        })
+        this.data.canvas.width = (r - l).toString()
+        this.data.canvas.height = (b - t).toString()
+        this.test()
+        // console.log(res[0])
+        // console.log(res[0].node)
+        // console.log(this.data.canvas)
+      })
+    const ctx = this.data.saving.getContext("2d")
+    // console.log(ctx)
+    ctx.clearRect(0, 0, this.data.canvas.width, this.data.canvas.height)
+    
+    for(var i = 0; i < this.data.patterns.length; i++){
+      this.drawObject(this.data.patterns[i], ctx)
+    }
+
+    this.setData({
+      boardX: oldX,
+      boardY: oldY,
+      boardScale: oldS,
+    })
+
     setTimeout(function() {
       wx.canvasToTempFilePath({
           canvasId: 'save',
@@ -252,10 +304,17 @@ Page({
   },
 
   setShapeType: function(arg) {
-    this.setData({
-      paintMode: arg.currentTarget.dataset.type,
-      selectedElement: null,
-    });
+    if ((arg.currentTarget.dataset.type == this.data.SHAPE.TEXT) && (this.data.selected != null)) {
+      this.setData({
+        paintMode: arg.currentTarget.dataset.type,
+        texts: true,
+      })
+    } else {
+      this.setData({
+        paintMode: arg.currentTarget.dataset.type,
+        selected: null,
+      });
+    }
     // wx.showToast({
     //   // title: this.data.paintMode,
     //   title: ""+arg.currentTarget.dataset.type,
@@ -427,7 +486,7 @@ Page({
   },
 
   deleteElementSelected: function() {
-    if (this.data.selectedElement == null) {
+    if (this.data.selected == null) {
       wx.showToast({
         icon: 'none',
         image: '../../icon/info_filled.png',
@@ -666,8 +725,8 @@ Page({
     const ctx = this.data.canvas.getContext("2d")
     console.log(ctx)
     ctx.clearRect(0, 0, this.data.canvas.width, this.data.canvas.height)
-    for(var i = 0; i < this.data.patterns.length; i++){
-      this.drawObject(this.data.patterns[i], ctx)
+    for (var i = 0; i < this.data.patterns.length; i++) {
+      this.drawObject(this.data.patterns[i], ctx, this.data.patterns[i] == this.data.selected)
     }
   },
 
@@ -809,7 +868,6 @@ Page({
 
 
   onTouchCanvas: function(event){
-    console.log(this.data)
     console.log(event)
     switch(this.data.paintMode){
       case this.data.SHAPE.SELECT:
