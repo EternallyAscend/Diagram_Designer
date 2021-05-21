@@ -46,7 +46,7 @@
     </view>
     <!-- Figure Area -->
     <view>
-      <canvas type="2d" id="Canvas" style="height: {{scrollViewHeight}}rpx; width: {{windowWidth}}" bindtap="onTouchCanvas"></canvas>
+      <canvas type="2d" id="Canvas" style="height: {{scrollViewHeight}}rpx; width: {{windowWidth}}" bindtouchstart="onTouchCanvas" bindtouchend="onTouchEndCanvas" bindtouchmove="onTouchMoveCanvas"></canvas>
     </view>
     <!-- Bottom Control Tool Bar -->
     <view>      

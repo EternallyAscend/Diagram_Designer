@@ -52,6 +52,16 @@ Page({
     selectedElement: null,
   },
 
+  arrow_drawing_cache: {
+    touch: null,
+    start: null,
+    startDirection: null,
+    end: null,
+    endDirection: null,
+    lastX: null,
+    lastY: null,
+  },
+
   readImage: function(id) {
     const db = wx.cloud.database();
     db.collection('Graph').doc(id).get({
@@ -81,8 +91,8 @@ Page({
           //   },
           // })
         }
+        this.data.patterns.push(...(res.data.garp != undefined ? res.data.garp : []))
         this.setData({
-          patterns: res.data.garp,
           name: res.data.name,
           desc: res.data.desc,
           // queryResult: JSON.stringify(res.data, null, 2)
@@ -305,7 +315,6 @@ Page({
     this.setData({
       graphId: options.Image,
     });
-    this.readImage(this.data.graphId);
     
     // this.saveFigure();
     // this.deleteFigure();
@@ -316,15 +325,16 @@ Page({
       .fields({node: true, size: true})
       .exec((res)=>{
         // this.data.canvas = res[0].node
+        this.readImage(this.data.graphId);
         this.setData({
           canvas: res[0].node
         })
         this.data.canvas.width = this.data.windowWidth.toString()
         this.data.canvas.height = (this.data.scrollViewHeight*this.data.windowWidth/750).toString()
         this.test()
-        // console.log(res[0])
-        // console.log(res[0].node)
-        // console.log(this.data.canvas)
+        //console.log("res:", res)
+        //console.log(res[0])
+        //console.log(this.data.canvas)
       })
 
   },
@@ -353,7 +363,7 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
+    
   },
 
   /**
@@ -622,13 +632,19 @@ Page({
     // vertical.push(up?arrow.end.y + arrow.end.height/2 + 10:arrow.end.y - arrow.end.height/2 - 10)
   },
 
-  selectObject: function(x, y){
-    var selectedIndex = this.data.patterns.findIndex((value, index, array)=>{
-      return x > value.realX 
-        && x < value.realX + value.width
-        && y > value.realY
-        && y < value.realY + value.height
+  findObject: function(x, y){
+    // var mapCor = (cor, axe)=>{
+    //   if(axe) return (cor - this.data.boardX)*this.data.boardScale
+    //   else return (cor - this.data.boardY)*this.data.boardScale
+    // }
+    this.data.patterns.findIndex((value, index, array)=>{
+      return this.isInPattern(x, y, value)
     })
+  },
+
+  selectObject: function(x, y){
+    console.log(this.data.patterns)
+    var selectedIndex = this.findObject(x, y)
     if (selectedIndex==-1){
       this.data.selected = null
     }
@@ -793,33 +809,120 @@ Page({
 
 
   onTouchCanvas: function(event){
-    this.setData({
-      texts: true,
-    })
+    console.log(this.data)
     console.log(event)
-    wx.showToast({
-      title: 'title',
-    })
-    wx.onTouchStart(
-
-    )
-    wx.onTouchMove()
-    wx.onTouchEnd()
-    wx.offTouchStart(
-
-    )
-    wx.offTouchMove()
-    wx.offTouchEnd()
     switch(this.data.paintMode){
       case this.data.SHAPE.SELECT:
-        this.selectObject(event.touches[0].pageX - this.data.canvas.left, event.touches[0].pageY - this.data.canvas.top)
+        this.selectObject(event.touches[0].pageX - event.target.offsetTop, event.touches[0].pageY - event.target.offsetLeft)
         break
       case this.data.SHAPE.SQUARE:
-        this.createPattern(event.touches[0].pageX - this.data.canvas.left, event.touches[0].pageY - this.data.canvas.top, this.data.paintMode)
+      case this.data.SHAPE.ELLIPSE:
+      case this.data.SHAPE.PARALLELOGRAM:
+      case this.data.SHAPE.DIAMOND:
+        this.createPattern(event.touches[0].pageX - event.target.offsetTop, event.touches[0].pageY - event.target.offsetLeft, this.data.paintMode)
         break
-      
+      case this.data.SHAPE.ARROW:
+        var index = this.findObject(event.touches[0].pageX - event.target.offsetTop, event.touches[0].pageY - event.target.offsetLeft)
+        if(index != -1){
+          this.arrow_drawing_cache.touch = event.touches[0].identifier
+          this.arrow_drawing_cache.start = this.data.patterns[index]
+          this.arrow_drawing_cache.lastX = event.touches[0].pageX
+          this.arrow_drawing_cache.lastY = event.touches[0].pageY
+        }
+        break
     }
-    drawAllObjects()
+    this.drawAllObjects()
+  },
+
+  onTouchMoveCanvas: function(event){
+    console.log(event)
+    switch (this.data.paintMode){
+      case this.data.SHAPE.ARROW:
+        var touch
+        if (this.data.arrow_drawing_cache.start) {
+          for (var i = 0; i < event.touches.length; i++){
+            if (event.touches[i].identifier == this.arrow_drawing_cache.touch){
+              touch = event.touches[i]
+              break
+            }
+          }
+        }
+        if (touch){
+          if(this.arrow_drawing_cache.startDirection == null){
+            var x = touch.pageX - event.target.offsetLeft, y = touch.pageY - event.target.offsetTop
+            if (!this.isInPattern(x, y, this.arrow_drawing_cache.start) 
+            && this.isInPattern(this.arrow_drawing_cache.lastX - event.target.offsetLeft, this.arrow_drawing_cache.lastY - event.target.offsetTop, this.arrow_drawing_cache.start)){
+              if (y > this.mapCor(this.arrow_drawing_cache.start.realY + this.arrow_drawing_cache.start.height / 2, this.AXE.Y)){
+                this.arrow_drawing_cache.startDirection = this.data.DIRECTION.DOWN
+              }
+              else if (x > this.mapCor(this.arrow_drawing_cache.start.realX + this.arrow_drawing_cache.start.width / 2, this.AXE.X)){
+                this.arrow_drawing_cache.startDirection = this.data.DIRECTION.RIGHT
+              }
+              else if (y < this.mapCor(this.arrow_drawing_cache.start.realY - this.arrow_drawing_cache.start.height / 2, this.AXE.Y)){
+                this.arrow_drawing_cache.startDirection = this.data.DIRECTION.UP
+              }
+              else if (x < this.mapCor(this.arrow_drawing_cache.start.realX - this.arrow_drawing_cache.start.width / 2, this.AXE.X)){
+                this.arrow_drawing_cache.startDirection = this.data.DIRECTION.LEFT
+              }
+            }
+            else {
+              this.arrow_drawing_cache.lastX = touch.pageX
+              this.arrow_drawing_cache.lastY = touch.pageY
+            }
+          }
+        }
+    }
+  },
+
+  onTouchEndCanvas: function(event) {
+    console.log(event)
+    switch(this.data.paintMode){
+      case this.data.SHAPE.ARROW:
+        var touch
+        for (var i = 0; i < event.touches.length; i++){
+          if (event.changedTouches[i].identifier == this.arrow_drawing_cache.touch){
+            touch = event.changedTouches[i]
+            break
+          }
+        }
+        if (touch){
+          var x = touch.pageX - event.target.offsetLeft, y = touch.pageY - event.target.offsetTop
+          var end = this.data.pattern[findObject(touch.pageX - event.target.offsetTop, touch.pageY - event.target.offsetLeft)]
+          this.arrow_drawing_cache.end = end
+          if(x >= mapCor(end.realX + end.width / 4, AXE.X)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.RIGHT
+          else if (x <= mapCor(end.realX - end.width / 4, AXE.X)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.LEFT
+          else if (y <= mapCor(end.realY, AXE.Y)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.DOWN
+          else if (y > mapCor(end.realY, AXE.Y)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.UP
+          createArrow(...this)
+          this.drawAllObjects()
+        }
+        this.resetArrowTouchCache()
+    }
+  },
+  mapCor: function(cor, axe){
+      if(axe) return (cor - this.data.boardX)*this.data.boardScale
+      else return (cor - this.data.boardY)*this.data.boardScale
+  },
+
+  AXE: {X: true, Y: false},
+
+  isInPattern: function(x, y, pattern) {
+    return x > this.mapCor(pattern.realX , this.AXE.X)
+      && x < this.mapCor(pattern.realX + pattern.width, this.AXE.X)
+      && y > this.mapCor(pattern.realY, this.AXE.Y)
+      && y < this.mapCor(pattern.realY + pattern.height, this.AXE.Y)
+  },
+
+  resetArrowTouchCache: function(){
+    this.arrow_drawing_cache = {
+      touch: null,
+      start: null,
+      startDirection: null,
+      end: null,
+      endDirection: null,
+      lastX: null,
+      lastY: null,
+    }
   },
 
   editText: function(str){
