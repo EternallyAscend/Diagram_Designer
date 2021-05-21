@@ -79,7 +79,7 @@
 </view>
 
 <view hidden="1">
-<canvas id="save"></canvas>
+<canvas type="2d" id="save"></canvas>
 </view>
 
 <view wx:if='{{texts}}' style="width:100%; height: {{windowHeight}}px; min-height: 100%;  display:flex; align-items: center; justify-content: center; text-align: center;">

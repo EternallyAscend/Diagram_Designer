@@ -258,20 +258,20 @@ Page({
         // console.log(res[0])
         // console.log(res[0].node)
         // console.log(this.data.canvas)
-      })
-    const ctx = this.data.saving.getContext("2d")
-    // console.log(ctx)
-    ctx.clearRect(0, 0, this.data.canvas.width, this.data.canvas.height)
+        const ctx = this.data.saving.getContext("2d")
+        // console.log(ctx)
+        ctx.clearRect(0, 0, this.data.canvas.width, this.data.canvas.height)
+        
+        for(var i = 0; i < this.data.patterns.length; i++){
+          this.drawObject(this.data.patterns[i], ctx)
+        }
     
-    for(var i = 0; i < this.data.patterns.length; i++){
-      this.drawObject(this.data.patterns[i], ctx)
-    }
-
-    this.setData({
-      boardX: oldX,
-      boardY: oldY,
-      boardScale: oldS,
-    })
+        this.setData({
+          boardX: oldX,
+          boardY: oldY,
+          boardScale: oldS,
+        })
+      })
 
     setTimeout(function() {
       wx.canvasToTempFilePath({
@@ -289,7 +289,7 @@ Page({
   },
 
   saveFigureToFileSystem: function() {
-    printSavedFigure();
+    this.printSavedFigure();
     wx.saveImageToPhotosAlbum({
         filePath: this.data.imagePath,
         success(res) {
