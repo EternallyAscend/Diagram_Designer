@@ -405,6 +405,7 @@ Page({
   },
 
   createTexts: function() {
+    this.createText(this.data.x, this.data.y, this.text)
     this.setData({
       texts: false,
       text: "",
@@ -414,7 +415,7 @@ Page({
   cancelCreateTexts: function() {
     this.setData({
       texts: false,
-      text: "",
+      text: this.data.selected?this.data.selected.text:"",
     })
   },
 
@@ -497,13 +498,13 @@ Page({
 
   moveHorizon: function(arg) {
     this.setData({
-      x: this.data.x + this.data.zoom * arg.currentTarget.dataset.step,
+      boardX: this.data.boardX + this.data.zoom * arg.currentTarget.dataset.step,
     });
   },
 
   moveVertical: function(arg) {
     this.setData({
-      y: this.data.y + this.data.zoom * arg.currentTarget.dataset.step,
+      boardY: this.data.boardY + this.data.zoom * arg.currentTarget.dataset.step,
     });
   },
   
@@ -919,6 +920,13 @@ Page({
         }
         console.log(this.arrow_drawing_cache)
         break
+      case this.data.SHAPE.TEXT:
+        this.setData({
+          x: event.touches[0].x,
+          y: event.touches[0].y,
+          texts: true,
+        })
+        break
     }
     this.drawAllObjects()
   },
@@ -1033,10 +1041,11 @@ Page({
     }
   },
 
-  editText: function(str){
+  editText: function(){
     if(this.data.selected){
+      this.setData({texts: true, text:this.data.selected.text})
       if (this.data.selected.type == this.data.SHAPE.ARROW) return 
-      this.data.selected.text = str
+      this.data.selected.text = this.data.text
     }
   },
 

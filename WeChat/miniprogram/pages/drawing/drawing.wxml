@@ -65,7 +65,7 @@
       <image class="image1" src="../../icon/icon-test46.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="-1"></image>
       <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="1"></image>
       
-      <image class="image1" src="../../icon/icon-test16.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="saveFigureToFileSystem"></image>
+      <image class="image1" src="../../icon/icon-test16.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="editText"></image>
       
       <!-- <text>↑</text>
       <text>↓</text>
