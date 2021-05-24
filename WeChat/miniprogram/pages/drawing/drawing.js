@@ -528,7 +528,7 @@ Page({
     })
   },
 
-  createArrow: function(start, end, startDirection, endDirection){
+  createArrow: function({start, end, startDirection, endDirection}){
     var arrow = this.adjustArrow({
       start: start,
       startDirection: startDirection,
@@ -699,6 +699,7 @@ Page({
     var findInPatterns = (value, index, array)=>{
       console.log(x, y, value)
       if(value.type == this.data.SHAPE.TEXT){
+        //var metrics =cvsCtx.measureText();
         return false
       }
       if(value.type == this.data.SHAPE.ARROW){
@@ -918,7 +919,7 @@ Page({
     switch (this.data.paintMode){
       case this.data.SHAPE.ARROW:
         var touch
-        if (this.data.arrow_drawing_cache.start) {
+        if (this.arrow_drawing_cache.start) {
           for (var i = 0; i < event.touches.length; i++){
             if (event.touches[i].identifier == this.arrow_drawing_cache.touch){
               touch = event.touches[i]
@@ -950,6 +951,7 @@ Page({
             }
           }
         }
+        console.log(this.arrow_drawing_cache)
     }
   },
 
@@ -958,7 +960,7 @@ Page({
     switch(this.data.paintMode){
       case this.data.SHAPE.ARROW:
         var touch
-        for (var i = 0; i < event.touches.length; i++){
+        for (var i = 0; i < event.changedTouches.length; i++){
           if (event.changedTouches[i].identifier == this.arrow_drawing_cache.touch){
             touch = event.changedTouches[i]
             break
@@ -966,13 +968,14 @@ Page({
         }
         if (touch){
           var x = touch.x, y = touch.y
-          var end = this.data.pattern[findObject(x, y)]
+          var end = this.data.patterns[this.findObject(x, y)]
           this.arrow_drawing_cache.end = end
-          if(x >= mapCor(end.realX + end.width / 4, AXE.X)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.RIGHT
-          else if (x <= mapCor(end.realX - end.width / 4, AXE.X)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.LEFT
-          else if (y <= mapCor(end.realY, AXE.Y)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.DOWN
-          else if (y > mapCor(end.realY, AXE.Y)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.UP
-          createArrow(...this)
+          if(x >= this.mapCor(end.realX + end.width / 4, this.AXE.X)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.RIGHT
+          else if (x <= this.mapCor(end.realX - end.width / 4, this.AXE.X)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.LEFT
+          else if (y <= this.mapCor(end.realY, this.AXE.Y)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.DOWN
+          else if (y > this.mapCor(end.realY, this.AXE.Y)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.UP
+          console.log(this.arrow_drawing_cache)
+          this.createArrow(this.arrow_drawing_cache)
           this.drawAllObjects()
         }
         this.resetArrowTouchCache()
@@ -1017,7 +1020,12 @@ Page({
     this.createPattern(20, 20, this.data.SHAPE.SQUARE)
     this.createPattern(100, 100, this.data.SHAPE.SQUARE)
     this.createText(20, 100, "abc")
-    this.createArrow(this.data.patterns[0], this.data.patterns[1], this.data.DIRECTION.RIGHT, this.data.DIRECTION.LEFT)
+    this.createArrow(
+      {
+        start: this.data.patterns[0], 
+        end: this.data.patterns[1], 
+        startDirection: this.data.DIRECTION.RIGHT, 
+        endDirection: this.data.DIRECTION.LEFT})
     this.drawAllObjects()
   }
 })
