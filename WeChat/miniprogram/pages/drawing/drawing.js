@@ -525,7 +525,6 @@ Page({
       size: 14,
       type: this.data.SHAPE.TEXT,
       text: text,
-      arrows: [],
     })
   },
 
@@ -696,14 +695,28 @@ Page({
     //   if(axe) return (cor - this.data.boardX)*this.data.boardScale
     //   else return (cor - this.data.boardY)*this.data.boardScale
     // }
-    this.data.patterns.findIndex((value, index, array)=>{
-      return this.isInPattern(x, y, value)
-    })
+    //console.log(this.data.patterns.findIndex)
+    var findInPatterns = (value, index, array)=>{
+      console.log(x, y, value)
+      if(value.type == this.data.SHAPE.TEXT){
+        return false
+      }
+      if(value.type == this.data.SHAPE.ARROW){
+        return false
+      }
+      else{
+        return this.isInPattern(x, y, value)
+      }
+    }
+    var index = this.data.patterns.findIndex(findInPatterns)
+    console.log(index)
+    return index
   },
 
   selectObject: function(x, y){
-    console.log(this.data.patterns)
+    //console.log(this.data.patterns)
     var selectedIndex = this.findObject(x, y)
+    console.log(selectedIndex, x, y)
     if (selectedIndex==-1){
       this.data.selected = null
     }
@@ -711,6 +724,8 @@ Page({
       this.data.patterns.push(this.data.patterns.splice(selectedIndex, 1)[0])
       this.data.selected = this.data.patterns[this.data.patterns.length - 1]
     }
+    console.log(this.data.selected)
+    console.log(this.data.patterns)
   },
 
   // drawSelection: function(ctx){
@@ -737,7 +752,12 @@ Page({
       if(axe) return (cor - this.data.boardX)*this.data.boardScale
       else return (cor - this.data.boardY)*this.data.boardScale
     }
-    if(selected) setLineDash([2,2])
+    if(selected) {
+      ctx.setLineDash([2,2])
+    }
+    else {
+      ctx.setLineDash([])
+    }
     // var mapCor = (x, y) => {
     //   return x
     // }
@@ -871,22 +891,23 @@ Page({
     console.log(event)
     switch(this.data.paintMode){
       case this.data.SHAPE.SELECT:
-        this.selectObject(event.touches[0].pageX - event.target.offsetTop, event.touches[0].pageY - event.target.offsetLeft)
+        this.selectObject(event.touches[0].x, event.touches[0].y)
         break
       case this.data.SHAPE.SQUARE:
       case this.data.SHAPE.ELLIPSE:
       case this.data.SHAPE.PARALLELOGRAM:
       case this.data.SHAPE.DIAMOND:
-        this.createPattern(event.touches[0].pageX - event.target.offsetTop, event.touches[0].pageY - event.target.offsetLeft, this.data.paintMode)
+        this.createPattern(event.touches[0].x, event.touches[0].y, this.data.paintMode)
         break
       case this.data.SHAPE.ARROW:
-        var index = this.findObject(event.touches[0].pageX - event.target.offsetTop, event.touches[0].pageY - event.target.offsetLeft)
+        var index = this.findObject(event.touches[0].x, event.touches[0].y)
         if(index != -1){
           this.arrow_drawing_cache.touch = event.touches[0].identifier
           this.arrow_drawing_cache.start = this.data.patterns[index]
-          this.arrow_drawing_cache.lastX = event.touches[0].pageX
-          this.arrow_drawing_cache.lastY = event.touches[0].pageY
+          this.arrow_drawing_cache.lastX = event.touches[0].x
+          this.arrow_drawing_cache.lastY = event.touches[0].y
         }
+        console.log(this.arrow_drawing_cache)
         break
     }
     this.drawAllObjects()
@@ -907,9 +928,9 @@ Page({
         }
         if (touch){
           if(this.arrow_drawing_cache.startDirection == null){
-            var x = touch.pageX - event.target.offsetLeft, y = touch.pageY - event.target.offsetTop
+            var x = touch.x, y = touch.y
             if (!this.isInPattern(x, y, this.arrow_drawing_cache.start) 
-            && this.isInPattern(this.arrow_drawing_cache.lastX - event.target.offsetLeft, this.arrow_drawing_cache.lastY - event.target.offsetTop, this.arrow_drawing_cache.start)){
+            && this.isInPattern(this.arrow_drawing_cache.lastX, this.arrow_drawing_cache.lastY, this.arrow_drawing_cache.start)){
               if (y > this.mapCor(this.arrow_drawing_cache.start.realY + this.arrow_drawing_cache.start.height / 2, this.AXE.Y)){
                 this.arrow_drawing_cache.startDirection = this.data.DIRECTION.DOWN
               }
@@ -924,8 +945,8 @@ Page({
               }
             }
             else {
-              this.arrow_drawing_cache.lastX = touch.pageX
-              this.arrow_drawing_cache.lastY = touch.pageY
+              this.arrow_drawing_cache.lastX = touch.x
+              this.arrow_drawing_cache.lastY = touch.y
             }
           }
         }
@@ -944,8 +965,8 @@ Page({
           }
         }
         if (touch){
-          var x = touch.pageX - event.target.offsetLeft, y = touch.pageY - event.target.offsetTop
-          var end = this.data.pattern[findObject(touch.pageX - event.target.offsetTop, touch.pageY - event.target.offsetLeft)]
+          var x = touch.x, y = touch.y
+          var end = this.data.pattern[findObject(x, y)]
           this.arrow_drawing_cache.end = end
           if(x >= mapCor(end.realX + end.width / 4, AXE.X)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.RIGHT
           else if (x <= mapCor(end.realX - end.width / 4, AXE.X)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.LEFT
@@ -957,6 +978,7 @@ Page({
         this.resetArrowTouchCache()
     }
   },
+
   mapCor: function(cor, axe){
       if(axe) return (cor - this.data.boardX)*this.data.boardScale
       else return (cor - this.data.boardY)*this.data.boardScale
@@ -965,10 +987,10 @@ Page({
   AXE: {X: true, Y: false},
 
   isInPattern: function(x, y, pattern) {
-    return x > this.mapCor(pattern.realX , this.AXE.X)
-      && x < this.mapCor(pattern.realX + pattern.width, this.AXE.X)
-      && y > this.mapCor(pattern.realY, this.AXE.Y)
-      && y < this.mapCor(pattern.realY + pattern.height, this.AXE.Y)
+    return x > this.mapCor(pattern.realX - pattern.width / 2 , this.AXE.X)
+      && x < this.mapCor(pattern.realX + pattern.width / 2, this.AXE.X)
+      && y > this.mapCor(pattern.realY - pattern.height / 2, this.AXE.Y)
+      && y < this.mapCor(pattern.realY + pattern.height / 2, this.AXE.Y)
   },
 
   resetArrowTouchCache: function(){
