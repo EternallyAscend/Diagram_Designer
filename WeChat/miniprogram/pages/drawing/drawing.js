@@ -395,7 +395,6 @@ Page({
         //console.log(res[0])
         //console.log(this.data.canvas)
       })
-
   },
 
   setContent: function(arg) {
@@ -405,11 +404,12 @@ Page({
   },
 
   createTexts: function() {
-    this.createText(this.data.x, this.data.y, this.text)
+    this.createText(this.data.x, this.data.y, this.data.text)
     this.setData({
       texts: false,
       text: "",
     })
+    this.reGetCanvas()
   },
 
   cancelCreateTexts: function() {
@@ -417,6 +417,22 @@ Page({
       texts: false,
       text: this.data.selected?this.data.selected.text:"",
     })
+    this.reGetCanvas()
+  },
+
+  reGetCanvas: function(){
+    const query = wx.createSelectorQuery();
+    query.select("#Canvas")
+      .fields({node: true, size: true})
+      .exec((res)=>{
+        this.readImage(this.data.graphId);
+        this.setData({
+          canvas: res[0].node
+        })
+        this.data.canvas.width = this.data.windowWidth.toString()
+        this.data.canvas.height = (this.data.scrollViewHeight*this.data.windowWidth/750).toString()
+        this.drawAllObjects()
+      })
   },
 
   /**
