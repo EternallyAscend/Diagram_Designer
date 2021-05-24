@@ -25,7 +25,7 @@ Page({
     canvas: null,
     DIRECTION: {
       RIGHT: 1,
-      TOP: 2,
+      UP: 2,
       LEFT: 3,
       DOWN: 4,
     },
@@ -596,11 +596,12 @@ Page({
     var isTransfered = !(arrow.startDirection % 2)                                          // 斜对称
     var trans = (x, y)=>{
       if(isTransfered){
-        return {x: grid.vertical[y], y: grid.horizon[x]}
+        return {x: grid.horizon[y], y: grid.vertical[x]}
       }
       else return {x: grid.horizon[x], y: grid.vertical[y]}
     }
 
+    console.log("left ",left, " up ", up, " parellel ", parellel, " startOut ", startOut, " endOut ", endOut)
     
     if(startOut){
       arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTERSTART))
@@ -609,19 +610,23 @@ Page({
           arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTER))
           arrow.path.push(trans(POS_COR.OUTEREND, POS_COR.CENTER))
           arrow.path.push(trans(POS_COR.OUTEREND, POS_COR.CENTEREND))
+          console.log("startOut endOut parellel")
         }
         else{
           arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.OUTEREND))
           arrow.path.push(trans(POS_COR.CENTEREND, POS_COR.OUTEREND))
+          console.log("startOut endOut !parellel")
         }
       }
       else {
         if(parellel){
           arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTEREND))
+          console.log("startOut !endOut parellel")
         }
         else{
           arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTER))
           arrow.path.push(trans(POS_COR.CENTEREND, POS_COR.CENTER))
+          console.log("startOut !endOut !parellel")
         }
       }
     }
@@ -630,20 +635,24 @@ Page({
         if(parellel){
           arrow.path.push(trans(POS_COR.OUTEREND, POS_COR.CENTERSTART))
           arrow.path.push(trans(POS_COR.OUTEREND, POS_COR.CENTEREND))
+          console.log("!startOut endOut parellel")
         }
         else{
           arrow.path.push(trans(POS_COR.INNERSTART, POS_COR.CENTERSTART))
           arrow.path.push(trans(POS_COR.INNERSTART, POS_COR.OUTEREND))
           arrow.path.push(trans(POS_COR.CENTEREND, POS_COR.OUTEREND))
+          console.log("!startOut endOut !parellel")
         }
       }
       else{
         if(parellel){
           arrow.path.push(trans(POS_COR.INNERSTART, POS_COR.CENTERSTART))
           arrow.path.push(trans(POS_COR.INNERSTART, POS_COR.CENTEREND))
+          console.log("!startOut !endOut parellel")
         }
         else{
           arrow.path.push(trans(POS_COR.CENTEREND, POS_COR.CENTERSTART))
+          console.log("!startOut !endOut !parellel")
         }
       }
     }
@@ -767,11 +776,11 @@ Page({
       switch(obj.startDirection){
         case this.data.DIRECTION.UP:
           startX = obj.start.realX
-          startY = obj.start.realY + obj.start.height / 2
+          startY = obj.start.realY - obj.start.height / 2
           break
         case this.data.DIRECTION.DOWN:
           startX = obj.start.realX
-          startY = obj.start.realY - obj.start.height / 2
+          startY = obj.start.realY + obj.start.height / 2
           break
         case this.data.DIRECTION.LEFT:
           startX = obj.start.realX - obj.start.width / 2
@@ -785,11 +794,11 @@ Page({
       switch(obj.endDirection){
         case this.data.DIRECTION.UP:
           endX = obj.end.realX
-          endY = obj.end.realY + obj.end.height / 2
+          endY = obj.end.realY - obj.end.height / 2
           break
         case this.data.DIRECTION.DOWN:
           endX = obj.end.realX
-          endY = obj.end.realY - obj.end.height / 2
+          endY = obj.end.realY + obj.end.height / 2
           break
         case this.data.DIRECTION.LEFT:
           endX = obj.end.realX - obj.end.width / 2
@@ -915,7 +924,7 @@ Page({
   },
 
   onTouchMoveCanvas: function(event){
-    console.log(event)
+    //console.log(event)
     switch (this.data.paintMode){
       case this.data.SHAPE.ARROW:
         var touch
@@ -967,13 +976,29 @@ Page({
           }
         }
         if (touch){
+          console.log("touch:", touch)
           var x = touch.x, y = touch.y
+          console.log("x ", x, "y ", y)
           var end = this.data.patterns[this.findObject(x, y)]
+          console.log("mapCor(end.realY, this.AXE.Y) ", this.mapCor(end.realY, this.AXE.Y))
           this.arrow_drawing_cache.end = end
-          if(x >= this.mapCor(end.realX + end.width / 4, this.AXE.X)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.RIGHT
-          else if (x <= this.mapCor(end.realX - end.width / 4, this.AXE.X)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.LEFT
-          else if (y <= this.mapCor(end.realY, this.AXE.Y)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.DOWN
-          else if (y > this.mapCor(end.realY, this.AXE.Y)) this.arrow_drawing_cache.endDirection = this.data.DIRECTION.UP
+          if(x >= this.mapCor(end.realX + end.width / 4, this.AXE.X)) {
+            this.arrow_drawing_cache.endDirection = this.data.DIRECTION.RIGHT
+            console.log("enddir right ", this.arrow_drawing_cache.endDirection)
+          }
+          else if (x <= this.mapCor(end.realX - end.width / 4, this.AXE.X)) {
+            this.arrow_drawing_cache.endDirection = this.data.DIRECTION.LEFT
+            console.log("enddir left ",this.arrow_drawing_cache.endDirection)
+          }
+          else if (y >= this.mapCor(end.realY, this.AXE.Y)) {
+            this.arrow_drawing_cache.endDirection = this.data.DIRECTION.DOWN
+            console.log("enddir down ",this.arrow_drawing_cache.endDirection)
+          }
+          //else if (y > this.mapCor(end.realY, this.AXE.Y)) 
+          else{
+            this.arrow_drawing_cache.endDirection = this.data.DIRECTION.UP
+            console.log("enddir up ", this.arrow_drawing_cache.endDirection)
+          }
           console.log(this.arrow_drawing_cache)
           this.createArrow(this.arrow_drawing_cache)
           this.drawAllObjects()
@@ -1020,12 +1045,15 @@ Page({
     this.createPattern(20, 20, this.data.SHAPE.SQUARE)
     this.createPattern(100, 100, this.data.SHAPE.SQUARE)
     this.createText(20, 100, "abc")
-    this.createArrow(
-      {
-        start: this.data.patterns[0], 
-        end: this.data.patterns[1], 
-        startDirection: this.data.DIRECTION.RIGHT, 
-        endDirection: this.data.DIRECTION.LEFT})
+    // this.createArrow(
+    //   {
+    //     start: this.data.patterns[0], 
+    //     end: this.data.patterns[1], 
+    //     startDirection: this.data.DIRECTION.RIGHT, 
+    //     endDirection: this.data.DIRECTION.LEFT})
+      
+    this.createPattern(50, 140, this.data.SHAPE.SQUARE)
+    this.createPattern(200, 250, this.data.SHAPE.SQUARE)
     this.drawAllObjects()
   }
 })
