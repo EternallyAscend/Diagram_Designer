@@ -496,11 +496,11 @@ Page({
   },
 
   zoomIn: function() {
-
+    this.data.boardScale += 0.2
   },
 
   zoomOut: function() {
-
+    this.data.boardScale -= 0.2
   },
 
   deleteElementSelected: function() {
@@ -514,15 +514,29 @@ Page({
   },
 
   moveHorizon: function(arg) {
-    this.setData({
-      boardX: this.data.boardX + this.data.zoom * arg.currentTarget.dataset.step,
-    });
+    var target = this.data.selected
+    if(target){
+      target.realX += parseInt(arg.currentTarget.dataset.step) * 10
+    }
+    else{
+      this.setData({
+       boardX: this.data.boardX + this.data.zoom * arg.currentTarget.dataset.step,
+      });
+    }
+    this.drawAllObjects()
   },
 
   moveVertical: function(arg) {
-    this.setData({
-      boardY: this.data.boardY + this.data.zoom * arg.currentTarget.dataset.step,
-    });
+    var target = this.data.selected
+    if(target){
+      target.realY += parseInt(arg.currentTarget.dataset.step) * 10
+    }
+    else{
+      this.setData({
+        boardY: this.data.boardY + this.data.zoom * arg.currentTarget.dataset.step,
+      });
+    }
+    this.drawAllObjects()
   },
   
   createPattern: function(x, y, type) {
@@ -735,6 +749,78 @@ Page({
           y > value.realY - value.size && y < value.realY
       }
       if(value.type == this.data.SHAPE.ARROW){
+        var between = (num, a, b) => {
+          return (num >= a && num <= b) || (num <= a && num >= b)
+        }
+        var length, width
+        var isHorizon = value.startDirection % 2
+        var segment = {
+          isHorizon,
+        }
+        switch (value.startDirection){
+          case this.data.DIRECTION.UP:
+          segment.pos = value.start.realX
+          segment.start = value.start.realY - value.start.height / 2
+          break
+        case this.data.DIRECTION.DOWN:
+          segment.pos = value.start.realX
+          segment.start = value.start.realY + value.start.height / 2
+          break
+        case this.data.DIRECTION.LEFT:
+          segment.start = value.start.realX - value.start.width / 2
+          segment.pos = value.start.realY
+          break
+        case this.data.DIRECTION.RIGHT:
+          segment.start = value.start.realX + value.start.width / 2
+          segment.pos = value.start.realY
+          break 
+        }
+        for (var i = 0; i < value.path.length; i++) {
+          segment.end = segment.isHorizon? value.path[i].x : value.path[i].y
+          if (!segment.isHorizon) {
+            length = y
+            width = x
+          }
+          else {
+            length = x
+            width = y
+          }
+          console.log(segment)
+          console.log(length, width)
+          if(between(length, segment.start, segment.end) && between(width, segment.pos + 3, segment.pos - 3))
+            return true
+          segment = {
+            isHorizon: !segment.isHorizon,
+            start: segment.pos,
+            pos: segment.end,
+          }
+        }
+        switch(value.endDirection){
+          case this.data.DIRECTION.UP:
+            segment.end = value.end.realY - value.end.height / 2
+            break
+          case this.data.DIRECTION.DOWN:
+            segment.end = value.end.realY + value.end.height / 2
+            break
+          case this.data.DIRECTION.LEFT:
+            segment.end = value.end.realX - value.end.width / 2
+            break
+          case this.data.DIRECTION.RIGHT:
+            segment.end = value.end.realX + value.end.width / 2
+            break
+        }
+        if (!segment.isHorizon) {
+          length = y
+          width = x
+        }
+        else {
+          length = x
+          width = y
+        }
+        console.log(segment)
+        console.log(length, width)
+        if(between(length, segment.start, segment.end) && between(width, segment.pos + 3, segment.pos - 3))
+          return true
         return false
       }
       else{
@@ -771,7 +857,7 @@ Page({
 
   drawAllObjects: function(){
     const ctx = this.data.canvas.getContext("2d")
-    console.log(ctx)
+    //console.log(ctx)
     ctx.clearRect(0, 0, this.data.canvas.width, this.data.canvas.height)
     for (var i = 0; i < this.data.patterns.length; i++) {
       this.drawObject(this.data.patterns[i], ctx, this.data.patterns[i] == this.data.selected)
@@ -779,7 +865,7 @@ Page({
   },
 
   drawObject: function(obj, ctx, selected=false){
-    console.log(obj)
+    //console.log(obj)
     const AXE = {X: true, Y: false}
     var mapCor = (cor, axe)=>{
       if(axe) return (cor - this.data.boardX)*this.data.boardScale
