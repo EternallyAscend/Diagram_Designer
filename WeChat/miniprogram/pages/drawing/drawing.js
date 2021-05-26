@@ -998,16 +998,13 @@ Page({
         ctx.stroke()
       }
       else if (obj.type == this.data.SHAPE.ELLIPSE) {
-        ctx.save()
         ctx.beginPath()
-        ctx.moveTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY, AXE.Y))
-        const d = obj.width > obj.height ? obj.width : obj.height
-        const radioX = obj.width / d  //* this.data.boardScale
-        const radioY = obj.height / d  //* this.data.boardScale
-        ctx.scale(radioX, radioY)
-        ctx.arc(mapCor(obj.realX / radioX, AXE.X), mapCor(obj.realY / radioY, AXE.Y), d / 2, 0, Math.PI * 2)
+        const r = obj.width * 0.2
+        ctx.arc(mapCor(obj.realX + obj.width / 2 - r, AXE.X), mapCor(obj.realY - obj.height / 2 + r, AXE.Y), r, Math.PI * 1.5, 0)
+        ctx.arc(mapCor(obj.realX + obj.width / 2 - r, AXE.X), mapCor(obj.realY + obj.height / 2 - r, AXE.Y), r, 0, Math.PI * 0.5)
+        ctx.arc(mapCor(obj.realX - obj.width / 2 + r, AXE.X), mapCor(obj.realY + obj.height / 2 - r, AXE.Y), r, Math.PI * 0.5, Math.PI)
+        ctx.arc(mapCor(obj.realX - obj.width / 2 + r, AXE.X), mapCor(obj.realY - obj.height / 2 + r, AXE.Y), r, Math.PI, Math.PI * 1.5)
         ctx.closePath()
-        ctx.restore()
         ctx.stroke()
       }
     }
