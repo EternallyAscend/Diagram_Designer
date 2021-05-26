@@ -800,11 +800,11 @@ Page({
           startY = obj.start.realY + obj.start.height / 2
           break
         case this.data.DIRECTION.LEFT:
-          startX = obj.start.realX - obj.start.width / 2
+          startX = obj.start.type == this.data.SHAPE.PARALLELOGRAM ? obj.start.realX - obj.start.width * 3 / 8 : obj.start.realX - obj.start.width / 2
           startY = obj.start.realY
           break
         case this.data.DIRECTION.RIGHT:
-          startX = obj.start.realX + obj.start.width / 2
+          startX = obj.start.type == this.data.SHAPE.PARALLELOGRAM ? obj.start.realX + obj.start.width * 3 / 8 : obj.start.realX + obj.start.width / 2
           startY = obj.start.realY
           break
       }
@@ -818,11 +818,11 @@ Page({
           endY = obj.end.realY + obj.end.height / 2
           break
         case this.data.DIRECTION.LEFT:
-          endX = obj.end.realX - obj.end.width / 2
+          endX = obj.end.type == this.data.SHAPE.PARALLELOGRAM ? obj.end.realX - obj.end.width * 3 / 8 : obj.end.realX - obj.end.width / 2
           endY = obj.end.realY
           break
         case this.data.DIRECTION.RIGHT:
-          endX = obj.end.realX + obj.end.width / 2
+          endX = obj.end.type == this.data.SHAPE.PARALLELOGRAM ? obj.end.realX + obj.end.width * 3 / 8 : obj.end.realX + obj.end.width / 2
           endY = obj.end.realY
           break
       }
