@@ -24,15 +24,17 @@
 <!-- Figure Views -->
 <scroll-view wx:if="{{number > 0}}" style="width:100%; height: {{scrollViewHeight}}px; min-height: {{scrollViewHeight}}px; white-space: nowrap;" scroll-y="true">
 
-<text style="" wx:if="{{number}}">{{number}} Figures</text>
+<view style="text-align: center;"><text wx:if="{{number}}">{{number}} Figures</text></view>
 
-<view wx:for="{{figureList}}" wx:key="_openid" style="border: solid 5rpx; margin: 10rpx;">
 
-<view bindtap="openFigure" data-index="{{item._id}}">
-<view><text> {{index + 1}}: {{item.name}} at {{item.time}} </text></view>
-<view style="height: 200rpx; min-height: 200rpx; width: 100%; min-width: 100%; background: #00bfff">
-</view>
-<view><text> Desctiption: {{item.desc}} </text></view>
+<view class="content" style="margin-left: 10rpx; margin-right: 10rpx; margin: 0rpx;">
+<view wx:for="{{figureList}}" wx:key="_openid" style="border: solid 5rpx; margin-top: 2%; margin-bottom: 2%; width: 44%; margin-left: 2%; margin-right: 2%;">
+  <!-- <view wx:for="{{figureList}}" wx:key="_openid" style="border: solid 5rpx; margin-top: 10rpx; margin-bottom: 10rpx; height:300rpx; width: 44%;"> -->
+<view bindtap="openFigure" data-index="{{item._id}}" style="">
+<view><text> {{index + 1}}: {{item.name}} </text></view>
+<canvas id="{{'canvas'+index}}" type="2d" style="width: 44%; height: 200px;"></canvas>
+<view><text> {{item.time}} </text></view>
+<!-- <view><text> {{item.time.substr(0, item.time.substr.indexOf(" "))}} </text></view> -->
 </view>
 <!-- <button>Edit</button>
 <button>Delete</button> -->
@@ -41,8 +43,9 @@
 <!-- <view><text> Desctiption: {{item.desc}} </text></view> -->
 
 </view>
+</view>
 
-<view style="position:relative; width: 100%; display:flex; align-items: center; justify-content: center; text-align: center;"><text> - Bottom - </text></view>
+<view style="position:relative; width: 100%; display:flex; align-items: center; justify-content: center; text-align: center; margin-bottom: 10rpx;"><text> - Bottom - </text></view>
 </scroll-view>
 
 </view>

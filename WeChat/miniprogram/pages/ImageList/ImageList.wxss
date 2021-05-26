@@ -1,1 +1,17 @@
 /* miniprogram/pages/ImageList.wxss */
+
+.content{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap:wrap;
+ }
+ 
+ .item{
+  width: 375rpx;
+  margin: 0 0 20rpx 0;
+ }
+ 
+ .item image{
+  width: 100%;
+  height: 450rpx;
+ }
