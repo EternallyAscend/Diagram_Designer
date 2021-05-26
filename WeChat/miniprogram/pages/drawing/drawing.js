@@ -492,15 +492,22 @@ Page({
   },
 
   originFigure: function () {
-    
+    this.setData({
+      boardScale: 1,
+      boardX: 0,
+      boardY: 0,
+    })
+    this.drawAllObjects()
   },
 
   zoomIn: function() {
     this.data.boardScale += 0.2
+    this.drawAllObjects()
   },
 
   zoomOut: function() {
     this.data.boardScale -= 0.2
+    this.drawAllObjects()
   },
 
   deleteElementSelected: function() {
