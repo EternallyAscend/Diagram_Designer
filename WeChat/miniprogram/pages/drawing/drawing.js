@@ -492,15 +492,22 @@ Page({
   },
 
   originFigure: function () {
-    
+    this.setData({
+      boardScale: 1,
+      boardX: 0,
+      boardY: 0,
+    })
+    this.drawAllObjects()
   },
 
   zoomIn: function() {
     this.data.boardScale += 0.2
+    this.drawAllObjects()
   },
 
   zoomOut: function() {
     this.data.boardScale -= 0.2
+    this.drawAllObjects()
   },
 
   deleteElementSelected: function() {
@@ -745,8 +752,8 @@ Page({
         console.log(metrics)
         console.log(x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2&&
           y > value.realY - value.size / 2 && y < value.realY + value.size / 2)
-        return x > value.realX && x < value.realX + metrics.width &&
-          y > value.realY - value.size && y < value.realY
+        return x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2&&
+        y > value.realY - value.size / 2 && y < value.realY + value.size / 2
       }
       if(value.type == this.data.SHAPE.ARROW){
         var between = (num, a, b) => {
@@ -892,11 +899,11 @@ Page({
           startY = obj.start.realY + obj.start.height / 2
           break
         case this.data.DIRECTION.LEFT:
-          startX = obj.start.realX - obj.start.width / 2
+          startX = obj.start.type == this.data.SHAPE.PARALLELOGRAM ? obj.start.realX - obj.start.width * 3 / 8 : obj.start.realX - obj.start.width / 2
           startY = obj.start.realY
           break
         case this.data.DIRECTION.RIGHT:
-          startX = obj.start.realX + obj.start.width / 2
+          startX = obj.start.type == this.data.SHAPE.PARALLELOGRAM ? obj.start.realX + obj.start.width * 3 / 8 : obj.start.realX + obj.start.width / 2
           startY = obj.start.realY
           break
       }
@@ -910,11 +917,11 @@ Page({
           endY = obj.end.realY + obj.end.height / 2
           break
         case this.data.DIRECTION.LEFT:
-          endX = obj.end.realX - obj.end.width / 2
+          endX = obj.end.type == this.data.SHAPE.PARALLELOGRAM ? obj.end.realX - obj.end.width * 3 / 8 : obj.end.realX - obj.end.width / 2
           endY = obj.end.realY
           break
         case this.data.DIRECTION.RIGHT:
-          endX = obj.end.realX + obj.end.width / 2
+          endX = obj.end.type == this.data.SHAPE.PARALLELOGRAM ? obj.end.realX + obj.end.width * 3 / 8 : obj.end.realX + obj.end.width / 2
           endY = obj.end.realY
           break
       }
@@ -983,10 +990,10 @@ Page({
       }
       else if (obj.type == this.data.SHAPE.PARALLELOGRAM) {
         ctx.beginPath()
-        ctx.moveTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
-        ctx.lineTo(mapCor(obj.realX + obj.width / 4, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
-        ctx.lineTo(mapCor(obj.realX + obj.width / 2, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
-        ctx.lineTo(mapCor(obj.realX - obj.width / 4, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
+        ctx.moveTo(mapCor(obj.realX + obj.width / 2, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
+        ctx.lineTo(mapCor(obj.realX - obj.width / 4, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
+        ctx.lineTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
+        ctx.lineTo(mapCor(obj.realX + obj.width / 4, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
         ctx.closePath()
         ctx.stroke()
       }
