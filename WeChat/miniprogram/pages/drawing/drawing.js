@@ -390,6 +390,7 @@ Page({
         })
         this.data.canvas.width = this.data.windowWidth.toString()
         this.data.canvas.height = (this.data.scrollViewHeight*this.data.windowWidth/750).toString()
+        console.log(this.data.canvas.width, this.data.canvas.height)
         this.test()
         //console.log("res:", res)
         //console.log(res[0])
@@ -539,7 +540,7 @@ Page({
     this.data.patterns.push({
       realX: x,
       realY: y,
-      size: 14,
+      size: 30,
       type: this.data.SHAPE.TEXT,
       text: text,
     })
@@ -725,8 +726,13 @@ Page({
     var findInPatterns = (value, index, array)=>{
       console.log(x, y, value)
       if(value.type == this.data.SHAPE.TEXT){
-        //var metrics =cvsCtx.measureText();
-        return false
+        const ctx = this.data.canvas.getContext("2d")
+        var metrics =ctx.measureText(value.text);
+        console.log(metrics)
+        console.log(x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2&&
+          y > value.realY - value.size / 2 && y < value.realY + value.size / 2)
+        return x > value.realX && x < value.realX + metrics.width &&
+          y > value.realY - value.size && y < value.realY
       }
       if(value.type == this.data.SHAPE.ARROW){
         return false
@@ -870,10 +876,11 @@ Page({
         console.log(obj.height*this.data.boardScale)
       }
       else if (obj.type == this.data.SHAPE.TEXT) {
+        ctx.font = obj.size + "pt Calibri"
         var objX = mapCor(obj.realX - ctx.measureText(obj.text).width / 2, AXE.X)
         var objY = mapCor(obj.realY + obj.size / 2, AXE.Y)
         if(selected){
-          ctx.strokeRect(objX, mapCor(obj.realY - obj.size / 2, AXE.Y))
+          ctx.strokeRect(objX, mapCor(obj.realY - obj.size / 2, AXE.Y), ctx.measureText(obj.text).width, obj.size)
         }
         //ctx.font = obj.size + "px SimHei"
         ctx.fillText(obj.text, objX, objY)
