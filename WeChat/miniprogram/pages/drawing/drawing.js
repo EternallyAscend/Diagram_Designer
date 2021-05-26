@@ -752,8 +752,8 @@ Page({
         console.log(metrics)
         console.log(x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2&&
           y > value.realY - value.size / 2 && y < value.realY + value.size / 2)
-        return x > value.realX && x < value.realX + metrics.width &&
-          y > value.realY - value.size && y < value.realY
+        return x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2&&
+        y > value.realY - value.size / 2 && y < value.realY + value.size / 2
       }
       if(value.type == this.data.SHAPE.ARROW){
         var between = (num, a, b) => {
