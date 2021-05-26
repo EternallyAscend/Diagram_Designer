@@ -405,7 +405,11 @@ Page({
   },
 
   createTexts: function() {
-    this.createText(this.data.x, this.data.y, this.data.text)
+    if (this.data.selected) {
+      this.data.selected.text=this.data.text
+    } else {
+      this.createText(this.data.x, this.data.y, this.data.text)
+    }
     this.setData({
       texts: false,
       text: "",
@@ -416,7 +420,7 @@ Page({
   cancelCreateTexts: function() {
     this.setData({
       texts: false,
-      text: this.data.selected?this.data.selected.text:"",
+      text: "", // this.data.selected?this.data.selected.text:"",
     })
     this.reGetCanvas()
   },
@@ -517,6 +521,10 @@ Page({
         image: '../../icon/info_filled.png',
         title: 'Not selected.',
       })
+    } else {
+      this.data.patterns.pop()
+      this.data.selected = null
+      this.drawAllObjects()
     }
   },
 

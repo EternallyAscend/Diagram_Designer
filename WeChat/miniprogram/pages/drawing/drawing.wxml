@@ -104,7 +104,7 @@
 
 <view wx:if='{{texts}}' style="width:100%; height: {{windowHeight}}px; min-height: 100%;  display:flex; align-items: center; justify-content: center; text-align: center;">
   <view>
-  <input placeholder="Please input content" bindinput="setContent"></input>
+  <input placeholder="Please input content" bindinput="setContent" value="{{text}}"></input>
   <view><button catchtap="createTexts">Confirm</button></view>
   <view><button catchtap="cancelCreateTexts">Cancel</button></view>
   </view>
