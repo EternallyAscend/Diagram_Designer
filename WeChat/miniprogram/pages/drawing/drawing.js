@@ -65,9 +65,9 @@ Page({
     const db = wx.cloud.database();
     db.collection('Graph').doc(id).get({
       success: res => {
-        wx.showToast({
-          title: res.data,
-        })
+        // wx.showToast({
+        //   title: res.data,
+        // })
         if (res._id != app.globalData.openid) {
           this.setData({
             editable: false,
@@ -94,8 +94,12 @@ Page({
         this.setData({
           name: res.data.name,
           desc: res.data.desc,
+          patterns: res.data.grap,
           // queryResult: JSON.stringify(res.data, null, 2)
         });
+        if (this.data.canvas) {
+          this.drawAllObjects()
+        }
       },
       fail: err => {
         wx.showToast({
@@ -254,7 +258,7 @@ Page({
         })
         this.data.canvas.width = (r - l).toString()
         this.data.canvas.height = (b - t).toString()
-        this.test()
+        // this.test()
         // console.log(res[0])
         // console.log(res[0].node)
         // console.log(this.data.canvas)
@@ -505,12 +509,24 @@ Page({
   },
 
   zoomIn: function() {
-    this.data.boardScale += 0.2
+    // this.data.boardScale += 0.2
+    if (this.data.boardScale >= 1.6) {
+      return
+    }
+    this.setData({
+      boardScale: (this.data.boardScale + 0.2).toFixed(2)
+    })
     this.drawAllObjects()
   },
 
   zoomOut: function() {
-    this.data.boardScale -= 0.2
+    // this.data.boardScale -= 0.2
+    if (this.data.boardScale <= 0.2) {
+      return
+    }
+    this.setData({
+      boardScale: (this.data.boardScale - 0.2).toFixed(2)
+    })
     this.drawAllObjects()
   },
 
