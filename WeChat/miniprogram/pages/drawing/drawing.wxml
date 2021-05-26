@@ -53,8 +53,8 @@
       <!-- Save Button -->
       <image class="image1" src="../../icon/icon-test19.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx; margin-left: 15rpx;" catchtap="saveFigure"></image>
       
-      <image class="image1" src="../../icon/icon-test45.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="-1"></image>
-      <image class="image1" src="../../icon/icon-test47.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="1"></image>
+      <image class="image1" src="../../icon/icon-test45.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="-1"></image>
+      <image class="image1" src="../../icon/icon-test47.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="1"></image>
 
       <image class="image1" src="../../icon/add-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="zoomIn"></image>
       
@@ -62,8 +62,8 @@
 
       <image class="image1" src="../../icon/sami-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="zoomOut"></image>
 
-      <image class="image1" src="../../icon/icon-test46.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="-1"></image>
-      <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="1"></image>
+      <image class="image1" src="../../icon/icon-test46.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="-1"></image>
+      <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="1"></image>
       
       <image class="image1" src="../../icon/icon-test16.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="editText"></image>
       
