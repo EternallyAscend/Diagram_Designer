@@ -890,10 +890,10 @@ Page({
       }
       else if (obj.type == this.data.SHAPE.PARALLELOGRAM) {
         ctx.beginPath()
-        ctx.moveTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
-        ctx.lineTo(mapCor(obj.realX + obj.width / 4, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
-        ctx.lineTo(mapCor(obj.realX + obj.width / 2, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
-        ctx.lineTo(mapCor(obj.realX - obj.width / 4, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
+        ctx.moveTo(mapCor(obj.realX + obj.width / 2, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
+        ctx.lineTo(mapCor(obj.realX - obj.width / 4, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
+        ctx.lineTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
+        ctx.lineTo(mapCor(obj.realX + obj.width / 4, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
         ctx.closePath()
         ctx.stroke()
       }
