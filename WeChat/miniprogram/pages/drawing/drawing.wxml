@@ -3,7 +3,7 @@
   <!-- Title -->
   <view style="height: 5rpx;"></view>
   <view style="width: 100%; text-align: center;" catchtap="showDescription">
-    <text style="height: {{titlesHeight}}rpx; width: 100%; font-size: 50rpx; justify-content: center; align-items: center;">{{name}}</text>
+    <text style="height: {{titlesHeight}}rpx; width: 100%; font-size: 50rpx; justify-content: center; align-items: center;">({{boardX}} ,{{boardY}}) - {{name}} - {{boardScale * 100}}%</text>
   </view>
   <!-- <view style="background: #010101; width: 100%; height: 5rpx;"></view> -->
   <!-- Main Body -->
