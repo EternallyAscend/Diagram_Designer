@@ -390,6 +390,7 @@ Page({
         })
         this.data.canvas.width = this.data.windowWidth.toString()
         this.data.canvas.height = (this.data.scrollViewHeight*this.data.windowWidth/750).toString()
+        console.log(this.data.canvas.width, this.data.canvas.height)
         this.test()
         //console.log("res:", res)
         //console.log(res[0])
@@ -495,11 +496,11 @@ Page({
   },
 
   zoomIn: function() {
-
+    this.data.boardScale += 0.2
   },
 
   zoomOut: function() {
-
+    this.data.boardScale -= 0.2
   },
 
   deleteElementSelected: function() {
@@ -513,15 +514,29 @@ Page({
   },
 
   moveHorizon: function(arg) {
-    this.setData({
-      boardX: this.data.boardX + this.data.zoom * arg.currentTarget.dataset.step,
-    });
+    var target = this.data.selected
+    if(target){
+      target.realX += parseInt(arg.currentTarget.dataset.step) * 10
+    }
+    else{
+      this.setData({
+       boardX: this.data.boardX + this.data.zoom * arg.currentTarget.dataset.step,
+      });
+    }
+    this.drawAllObjects()
   },
 
   moveVertical: function(arg) {
-    this.setData({
-      boardY: this.data.boardY + this.data.zoom * arg.currentTarget.dataset.step,
-    });
+    var target = this.data.selected
+    if(target){
+      target.realY += parseInt(arg.currentTarget.dataset.step) * 10
+    }
+    else{
+      this.setData({
+        boardY: this.data.boardY + this.data.zoom * arg.currentTarget.dataset.step,
+      });
+    }
+    this.drawAllObjects()
   },
   
   createPattern: function(x, y, type) {
@@ -539,7 +554,7 @@ Page({
     this.data.patterns.push({
       realX: x,
       realY: y,
-      size: 14,
+      size: 30,
       type: this.data.SHAPE.TEXT,
       text: text,
     })
@@ -725,10 +740,87 @@ Page({
     var findInPatterns = (value, index, array)=>{
       console.log(x, y, value)
       if(value.type == this.data.SHAPE.TEXT){
-        //var metrics =cvsCtx.measureText();
-        return false
+        const ctx = this.data.canvas.getContext("2d")
+        var metrics =ctx.measureText(value.text);
+        console.log(metrics)
+        console.log(x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2&&
+          y > value.realY - value.size / 2 && y < value.realY + value.size / 2)
+        return x > value.realX && x < value.realX + metrics.width &&
+          y > value.realY - value.size && y < value.realY
       }
       if(value.type == this.data.SHAPE.ARROW){
+        var between = (num, a, b) => {
+          return (num >= a && num <= b) || (num <= a && num >= b)
+        }
+        var length, width
+        var isHorizon = value.startDirection % 2
+        var segment = {
+          isHorizon,
+        }
+        switch (value.startDirection){
+          case this.data.DIRECTION.UP:
+          segment.pos = value.start.realX
+          segment.start = value.start.realY - value.start.height / 2
+          break
+        case this.data.DIRECTION.DOWN:
+          segment.pos = value.start.realX
+          segment.start = value.start.realY + value.start.height / 2
+          break
+        case this.data.DIRECTION.LEFT:
+          segment.start = value.start.realX - value.start.width / 2
+          segment.pos = value.start.realY
+          break
+        case this.data.DIRECTION.RIGHT:
+          segment.start = value.start.realX + value.start.width / 2
+          segment.pos = value.start.realY
+          break 
+        }
+        for (var i = 0; i < value.path.length; i++) {
+          segment.end = segment.isHorizon? value.path[i].x : value.path[i].y
+          if (!segment.isHorizon) {
+            length = y
+            width = x
+          }
+          else {
+            length = x
+            width = y
+          }
+          console.log(segment)
+          console.log(length, width)
+          if(between(length, segment.start, segment.end) && between(width, segment.pos + 3, segment.pos - 3))
+            return true
+          segment = {
+            isHorizon: !segment.isHorizon,
+            start: segment.pos,
+            pos: segment.end,
+          }
+        }
+        switch(value.endDirection){
+          case this.data.DIRECTION.UP:
+            segment.end = value.end.realY - value.end.height / 2
+            break
+          case this.data.DIRECTION.DOWN:
+            segment.end = value.end.realY + value.end.height / 2
+            break
+          case this.data.DIRECTION.LEFT:
+            segment.end = value.end.realX - value.end.width / 2
+            break
+          case this.data.DIRECTION.RIGHT:
+            segment.end = value.end.realX + value.end.width / 2
+            break
+        }
+        if (!segment.isHorizon) {
+          length = y
+          width = x
+        }
+        else {
+          length = x
+          width = y
+        }
+        console.log(segment)
+        console.log(length, width)
+        if(between(length, segment.start, segment.end) && between(width, segment.pos + 3, segment.pos - 3))
+          return true
         return false
       }
       else{
@@ -765,7 +857,7 @@ Page({
 
   drawAllObjects: function(){
     const ctx = this.data.canvas.getContext("2d")
-    console.log(ctx)
+    //console.log(ctx)
     ctx.clearRect(0, 0, this.data.canvas.width, this.data.canvas.height)
     for (var i = 0; i < this.data.patterns.length; i++) {
       this.drawObject(this.data.patterns[i], ctx, this.data.patterns[i] == this.data.selected)
@@ -773,7 +865,7 @@ Page({
   },
 
   drawObject: function(obj, ctx, selected=false){
-    console.log(obj)
+    //console.log(obj)
     const AXE = {X: true, Y: false}
     var mapCor = (cor, axe)=>{
       if(axe) return (cor - this.data.boardX)*this.data.boardScale
@@ -870,10 +962,11 @@ Page({
         console.log(obj.height*this.data.boardScale)
       }
       else if (obj.type == this.data.SHAPE.TEXT) {
+        ctx.font = obj.size + "pt Calibri"
         var objX = mapCor(obj.realX - ctx.measureText(obj.text).width / 2, AXE.X)
         var objY = mapCor(obj.realY + obj.size / 2, AXE.Y)
         if(selected){
-          ctx.strokeRect(objX, mapCor(obj.realY - obj.size / 2, AXE.Y))
+          ctx.strokeRect(objX, mapCor(obj.realY - obj.size / 2, AXE.Y), ctx.measureText(obj.text).width, obj.size)
         }
         //ctx.font = obj.size + "px SimHei"
         ctx.fillText(obj.text, objX, objY)
@@ -898,16 +991,13 @@ Page({
         ctx.stroke()
       }
       else if (obj.type == this.data.SHAPE.ELLIPSE) {
-        ctx.save()
         ctx.beginPath()
-        ctx.moveTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY, AXE.Y))
-        const d = obj.width > obj.height ? obj.width : obj.height
-        const radioX = obj.width / d  //* this.data.boardScale
-        const radioY = obj.height / d  //* this.data.boardScale
-        ctx.scale(radioX, radioY)
-        ctx.arc(mapCor(obj.realX / radioX, AXE.X), mapCor(obj.realY / radioY, AXE.Y), d / 2, 0, Math.PI * 2)
+        const r = obj.width * 0.2
+        ctx.arc(mapCor(obj.realX + obj.width / 2 - r, AXE.X), mapCor(obj.realY - obj.height / 2 + r, AXE.Y), r, Math.PI * 1.5, 0)
+        ctx.arc(mapCor(obj.realX + obj.width / 2 - r, AXE.X), mapCor(obj.realY + obj.height / 2 - r, AXE.Y), r, 0, Math.PI * 0.5)
+        ctx.arc(mapCor(obj.realX - obj.width / 2 + r, AXE.X), mapCor(obj.realY + obj.height / 2 - r, AXE.Y), r, Math.PI * 0.5, Math.PI)
+        ctx.arc(mapCor(obj.realX - obj.width / 2 + r, AXE.X), mapCor(obj.realY - obj.height / 2 + r, AXE.Y), r, Math.PI, Math.PI * 1.5)
         ctx.closePath()
-        ctx.restore()
         ctx.stroke()
       }
     }
