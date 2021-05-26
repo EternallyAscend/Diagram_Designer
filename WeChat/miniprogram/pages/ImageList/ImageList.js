@@ -310,7 +310,7 @@ Page({
     //console.log(ctx)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.translate(-range.left, -range.top)
-    ctx.scale(canvas.width / (range.right - range.left), canvas.height / (range.bottom - range.top))
+    ctx.scale(this.data.windowWidth * 0.44 / (range.right - range.left), canvas.height / (range.bottom - range.top))
     for (var i = 0; i < patterns.length; i++) {
       this.drawObject(patterns[i], ctx)
     }
