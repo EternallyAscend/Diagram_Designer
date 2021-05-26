@@ -15,6 +15,7 @@ Page({
     desc: "",
     titlesHeight: 40,
     windowHeight: 0,
+    windowWidth: 0,
     navbarHeight: 0,
     headerHeight: 0,
     scrollViewHeight: 0,
@@ -80,7 +81,7 @@ Page({
       });
       return;
     }
-    let time = new Date().toLocaleString(); //.split('/').join('-');
+    let time = new Date().toLocaleString().substr(0, 10); //.split('/').join('-');
     // console.log(new Date().toLocaleDateString());
     let grap = [];
     let database = wx.cloud.database();
@@ -175,7 +176,8 @@ Page({
         that.setData({
           windowHeight: res.windowHeight,
           navbarHeight: res.navbarHeight,
-          headerHeight: res.navbarHeight
+          headerHeight: res.navbarHeight,
+          windowWidth: res.windowWidth,
         });
       }
     });
