@@ -490,9 +490,7 @@ Page({
       if (obj.type == this.data.SHAPE.SQUARE) {
         var objX = obj.realX - obj.width / 2
         var objY = obj.realY - obj.height / 2
-        ctx.strokeRect(objX, objY, obj.width*this.data.boardScale, obj.height*this.data.boardScale)
-        console.log(obj.width*this.data.boardScale)
-        console.log(obj.height*this.data.boardScale)
+        ctx.strokeRect(objX, objY, obj.width, obj.height)
       }
       else if (obj.type == this.data.SHAPE.TEXT) {
         ctx.font = obj.size + "pt Calibri"

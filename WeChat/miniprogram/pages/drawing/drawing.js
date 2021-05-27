@@ -434,7 +434,7 @@ Page({
     query.select("#Canvas")
       .fields({node: true, size: true})
       .exec((res)=>{
-        this.readImage(this.data.graphId);
+        // this.readImage(this.data.graphId);
         this.setData({
           canvas: res[0].node
         })
@@ -462,18 +462,18 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    if (this.data.id) {
-      this.saveFigure();
-    }
+    // var pages = getCurrentPages();
+    // var pageBack = pages[pages.length - 2]
+    // pageBack.onLoad()
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    if (this.data.id) {
-      this.saveFigure();
-    }
+    // var pages = getCurrentPages();
+    // var pageBack = pages[pages.length - 2]
+    // pageBack.onLoad()
   },
 
   /**
