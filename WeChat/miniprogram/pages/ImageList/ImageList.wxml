@@ -32,7 +32,7 @@
   <!-- <view wx:for="{{figureList}}" wx:key="_openid" style="border: solid 5rpx; margin-top: 10rpx; margin-bottom: 10rpx; height:300rpx; width: 44%;"> -->
 <view bindtap="openFigure" data-index="{{item._id}}" style="">
 <view><text> {{index + 1}}: {{item.name}} </text></view>
-<canvas id="{{'canvas'+index}}" type="2d" style="width: 44%; height: 200px;"></canvas>
+<canvas id="{{'canvas'+index}}" type="2d" style="width: 100%; height: 200px;"></canvas>
 <view><text> {{item.time}} </text></view>
 <!-- <view><text> {{item.time.substr(0, item.time.substr.indexOf(" "))}} </text></view> -->
 </view>

@@ -154,6 +154,54 @@ Page({
     });
   },
 
+  readDB: async function (){
+    let database = wx.cloud.database();
+    try {
+      const res = await (database.collection('Graph').where({
+        // _openid: this.data.uuid,
+        _openid: app.globalData.openid,
+      }).get())
+      console.log(res)
+      this.setData({
+        figureList: res.data,
+        number: res.data.length,
+      })
+    } catch (err) {
+      wx.showToast({
+        icon: 'none',
+        title: 'Loading Failed.'
+      })
+      console.error(err)
+    }
+    // await database.collection('Graph').where({
+    //   // _openid: this.data.uuid,
+    //   _openid: app.globalData.openid,
+    // }).get({
+    //   success: res => {
+    //     this.setData({
+    //       figureList: res.data,
+    //       number: res.data.length,
+    //     });
+    //   },
+    //   fail: err => {
+    //     wx.showToast({
+    //       icon: 'none',
+    //       title: 'Loading Failed.'
+    //     })
+    //     console.error(err)
+    //   }
+    // });
+  },
+
+  initPreview: function(){
+    //console.log(this.data.number)
+    //console.log(this.data.figureList[0])
+    for (var item in this.data.figureList){
+      console.log(this.data.figureList[item])
+      this.drawPreview(item)
+    }
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -163,27 +211,7 @@ Page({
       this.onGetOpenid();
     }
 
-    let database = wx.cloud.database();
-    database.collection('Graph').where({
-      // _openid: this.data.uuid,
-      _openid: app.globalData.openid,
-    }).get({
-      success: res => {
-        this.setData({
-          figureList: res.data,
-          number: res.data.length,
-        });
-      },
-      fail: err => {
-        wx.showToast({
-          icon: 'none',
-          title: 'Loading Failed.'
-        })
-        console.error(err)
-      }
-    });
     
-
     // Fetch System Information.
     let that = this;
     wx.getSystemInfo({
@@ -203,21 +231,31 @@ Page({
         scrollViewHeight: scrollHeight
     });
 
-    const query = wx.createSelectorQuery();
-    for (var i = 0; i < this.data.number; i++)
-    query.select("#canvas" + i)
-      .fields({node: true, size: true})
-      .exec((res)=>{
-        // this.data.canvas = res[0].node
-        var patterns = this.data.figureList[i]
-        // this.data.canvas.width = this.data.windowWidth.toString()
-        // this.data.canvas.height = (this.data.scrollViewHeight*this.data.windowWidth/750).toString()
-        // console.log(this.data.canvas.width, this.data.canvas.height)
-        this.drawAllObjects(res[0].node, patterns)
-        console.log("res:", res)
-        console.log(res[0])
-        console.log(this.data.canvas)
-      })
+
+    // let database = wx.cloud.database();
+    // database.collection('Graph').where({
+    //   // _openid: this.data.uuid,
+    //   _openid: app.globalData.openid,
+    // }).get({
+    //   success: res => {
+    //     this.setData({
+    //       figureList: res.data,
+    //       number: res.data.length,
+    //     });
+    //   },
+    //   fail: err => {
+    //     wx.showToast({
+    //       icon: 'none',
+    //       title: 'Loading Failed.'
+    //     })
+    //     console.error(err)
+    //   }
+    // });
+
+    this.readDB().then(this.initPreview)
+    
+
+    
   },
 
   /**
@@ -274,46 +312,102 @@ Page({
     })
   },
 
-  drawPreview: function(patterns, canvas){
-    drawAllObjects(canvas, patterns)
+  drawPreview: function(index){
+    const query = wx.createSelectorQuery();
+    query.select("#canvas" + index)
+        .fields({node: true, size: true})
+        .exec((res)=>{
+          // this.data.canvas = res[0].node
+          console.log(index)
+          //console.log(this.data.figureList[index]['grap'])
+          var patterns = this.data.figureList[index]['grap']
+          if (!patterns) return
+          //console.log(patterns)
+          // this.data.canvas.width = this.data.windowWidth.toString()
+          // this.data.canvas.height = (this.data.scrollViewHeight*this.data.windowWidth/750).toString()
+          // console.log(this.data.canvas.width, this.data.canvas.height)
+          var canvas = res[0].node
+          canvas.width = 0.44 * this.data.windowWidth
+          canvas.height = 200
+          this.drawAllObjects(res[0].node, patterns)
+          // console.log("res:", res)
+          //console.log(canvas)
+          // console.log(this.data.canvas)
+        })
   },
   
   getImageRange: function(patterns){
-    return patterns.reduce((total, value) => {
-      if(value.type == this.data.SHAPE.ARROW){
-        var {left, right, bottom, top} = value.path.reduce((total, value) => {
-          return {
-            left: total.left <= value.x ? total.left : value.x,
-            right: total.right >= value.x ? total.right : value.x,
-            top: total.top <= value.y ? total.top : value.y,
-            bottom: total.bottom >= value.y ? total.bottom : value.y,
-          }
-        })
+    var left, right, bottom, top
+    for (var index in patterns){
+      var pattern = patterns[index]
+      if(!pattern) continue
+      console.log(pattern)
+      if(pattern.type == this.data.SHAPE.ARROW){
+        for (var point in pattern.path){
+          var p = pattern.path[point]
+          left = left <= p.x ? left : p.x
+          right = right >= p.x ? right : p.x
+          top = top <= p.y ? top : p.y
+          bottom = bottom >= p.y ? bottom : p.y
+        }
       }
       else {
-        var left = value.realX - value.width / 2
-        var right = value.realX + value.width / 2
-        var top = value.realY - value.height / 2
-        var bottom = value.realY + value.height / 2
+        var patternLeft = pattern.realX - pattern.width / 2
+        var patternRight = pattern.realX + pattern.width / 2
+        var patternTop = pattern.realY - pattern.height / 2
+        var patternBottom = pattern.realY + pattern.height / 2
+        left = left <= patternLeft ? left : patternLeft
+        right = right >= patternRight ? right : patternRight
+        top = top <= patternTop ? top : patternTop
+        bottom = bottom >= patternBottom ? bottom : patternBottom
       }
-      return {
-        left: total.left <= left ? total.left : left,
-        right: total.right >= right ? total.right : right,
-        top: total.top <= top ? total.top : top,
-        bottom: total.bottom >= bottom ? total.bottom : bottom,
-      }
-    })
+    }
+    return {
+      left: left,
+      right: right,
+      top: top,
+      bottom: bottom,
+    }
+    // return patterns.reduce((total, value) => {
+    //   if(value.type == this.data.SHAPE.ARROW){
+    //     var {left, right, bottom, top} = value.path.reduce((total, value) => {
+    //       return {
+    //         left: total.left <= value.x ? total.left : value.x,
+    //         right: total.right >= value.x ? total.right : value.x,
+    //         top: total.top <= value.y ? total.top : value.y,
+    //         bottom: total.bottom >= value.y ? total.bottom : value.y,
+    //       }
+    //     })
+    //   }
+    //   else {
+    //     var left = value.realX - value.width / 2
+    //     var right = value.realX + value.width / 2
+    //     var top = value.realY - value.height / 2
+    //     var bottom = value.realY + value.height / 2
+    //   }
+    //   console.log(left, right, top, bottom)
+    //   return {
+    //     left: total.left <= left ? total.left : left,
+    //     right: total.right >= right ? total.right : right,
+    //     top: total.top <= top ? total.top : top,
+    //     bottom: total.bottom >= bottom ? total.bottom : bottom,
+    //   }
+    // }, {left: undefined, right: undefined, left: undefined, right: undefined})
   },
 
   drawAllObjects: function(canvas, patterns){
     const ctx = canvas.getContext("2d")
     ctx.save()
-    range = this.getImageRange(patterns)
-    //console.log(ctx)
+    var range = this.getImageRange(patterns)
+    //console.log(canvas)
+    console.log(range)
+    console.log(this.data.windowWidth * 0.44, canvas.height)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.translate(-range.left, -range.top)
     ctx.scale(this.data.windowWidth * 0.44 / (range.right - range.left), canvas.height / (range.bottom - range.top))
+    console.log(ctx)
     for (var i = 0; i < patterns.length; i++) {
+      if(!patterns[i]) continue
       this.drawObject(patterns[i], ctx)
     }
   },
