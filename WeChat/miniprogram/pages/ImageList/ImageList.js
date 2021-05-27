@@ -211,6 +211,11 @@ Page({
       this.onGetOpenid();
     }
 
+    var a = new Array(3)
+    a[0] = 0
+    a[1] = 1
+    a[2] = 2
+    console.log(a)
     
     // Fetch System Information.
     let that = this;
@@ -336,7 +341,7 @@ Page({
         })
   },
   
-  getImageRange: function(patterns){
+  getImageRange: function(patterns, ctx){
     var left, right, bottom, top
     for (var index in patterns){
       var pattern = patterns[index]
@@ -352,10 +357,23 @@ Page({
         }
       }
       else {
-        var patternLeft = pattern.realX - pattern.width / 2
-        var patternRight = pattern.realX + pattern.width / 2
-        var patternTop = pattern.realY - pattern.height / 2
-        var patternBottom = pattern.realY + pattern.height / 2
+        var patternLeft
+        var patternRight
+        var patternTop
+        var patternBottom
+
+        if (pattern.type == this.data.SHAPE.TEXT) {
+          var width = ctx.measureText(pattern.text).width / 2
+          patternLeft = pattern.realX - width / 2
+          patternRight = pattern.realX + width / 2
+          patternTop = pattern.realY - pattern.size / 2
+          patternBottom = pattern.realY + pattern.size / 2
+        } else {
+          patternLeft = pattern.realX - pattern.width / 2
+          patternRight = pattern.realX + pattern.width / 2
+          patternTop = pattern.realY - pattern.height / 2
+          patternBottom = pattern.realY + pattern.height / 2
+        }
         left = left <= patternLeft ? left : patternLeft
         right = right >= patternRight ? right : patternRight
         top = top <= patternTop ? top : patternTop
@@ -398,13 +416,24 @@ Page({
   drawAllObjects: function(canvas, patterns){
     const ctx = canvas.getContext("2d")
     ctx.save()
-    var range = this.getImageRange(patterns)
+    var range = this.getImageRange(patterns, ctx)
     //console.log(canvas)
     console.log(range)
     console.log(this.data.windowWidth * 0.44, canvas.height)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.translate(-range.left, -range.top)
-    ctx.scale(this.data.windowWidth * 0.44 / (range.right - range.left), canvas.height / (range.bottom - range.top))
+    var scaleX = this.data.windowWidth * 0.44 / (range.right - range.left)
+    var scaleY = canvas.height / (range.bottom - range.top)
+    var scale //= Math.min(this.data.windowWidth * 0.44 / (range.right - range.left), canvas.height / (range.bottom - range.top))
+    if (scaleX < scaleY){
+      ctx.translate(0, (canvas.height - scaleX * (range.bottom - range.top)) / 2)
+      scale = scaleX
+    }
+    else {
+      ctx.translate((this.data.windowWidth * 0.44 - scaleY * (range.right - range.left)) / 2, 0)
+      scale = scaleY
+    }
+    ctx.scale(scale, scale)
     console.log(ctx)
     for (var i = 0; i < patterns.length; i++) {
       if(!patterns[i]) continue
@@ -490,17 +519,12 @@ Page({
       if (obj.type == this.data.SHAPE.SQUARE) {
         var objX = obj.realX - obj.width / 2
         var objY = obj.realY - obj.height / 2
-        ctx.strokeRect(objX, objY, obj.width*this.data.boardScale, obj.height*this.data.boardScale)
-        console.log(obj.width*this.data.boardScale)
-        console.log(obj.height*this.data.boardScale)
+        ctx.strokeRect(objX, objY, obj.width, obj.height)
       }
       else if (obj.type == this.data.SHAPE.TEXT) {
         ctx.font = obj.size + "pt Calibri"
         var objX = obj.realX - ctx.measureText(obj.text).width / 2
         var objY = obj.realY + obj.size / 2
-        if(selected){
-          ctx.strokeRect(objX, obj.realY - obj.size / 2, ctx.measureText(obj.text).width, obj.size)
-        }
         ctx.fillText(obj.text, objX, objY)
       }
       else if (obj.type == this.data.SHAPE.DIAMOND) {
