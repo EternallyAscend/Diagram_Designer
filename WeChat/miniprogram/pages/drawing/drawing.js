@@ -132,12 +132,14 @@ Page({
         latest: new Date().toLocaleString(),
       },
       success: res => {
-        console.log(res);
+        wx.showToast({
+          title: 'Save OK!',
+        })
       },
       fail: err => {
         wx.showToast({
           icon: 'none',
-          title: 'save failed title',
+          title: 'Save failed.',
         })
       }
     })
@@ -189,7 +191,7 @@ Page({
             })
           } else {
             wx.showToast({
-              title: 'Else',
+              title: 'Cancel.',
             })
             return;
           }
@@ -516,9 +518,6 @@ Page({
     console.log(this.data.boardScale)
     this.setData({
       boardScale: (parseFloat(this.data.boardScale) + 0.2).toFixed(2)
-    })
-    wx.showToast({
-      title: this.data.boardScale,
     })
     this.drawAllObjects()
     return

@@ -140,9 +140,6 @@ Page({
     wx.navigateTo({
       url: '/pages/drawing/drawing?Image=' + arg.currentTarget.dataset.index,
       success: (result) => {
-        wx.showToast({
-          title: 'title',
-        })
       },
       fail: (res) => {
         wx.showToast({
