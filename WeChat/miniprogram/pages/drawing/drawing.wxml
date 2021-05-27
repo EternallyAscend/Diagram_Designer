@@ -3,7 +3,7 @@
   <!-- Title -->
   <view style="height: 5rpx;"></view>
   <view style="width: 100%; text-align: center;" catchtap="showDescription">
-    <text style="height: {{titlesHeight}}rpx; width: 100%; font-size: 50rpx; justify-content: center; align-items: center;">({{boardX}} ,{{boardY}}) - {{name}} - {{boardScale * 100}}%</text>
+    <text style="height: {{titlesHeight}}rpx; width: 100%; font-size: 40rpx; justify-content: center; align-items: center;">({{boardX}} ,{{boardY}}) - {{name}} - {{boardScale * 100}}%</text>
   </view>
   <!-- <view style="background: #010101; width: 100%; height: 5rpx;"></view> -->
   <!-- Main Body -->
@@ -24,16 +24,41 @@
       <span class="icon-A" style="font-size:128rpx"></span> -->
       <!-- <image src="/miniprogram/icon/icon-test2.svg" class='seat-img'></image> -->
 
-      <image class="image1" src="../../icon/move.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; margin-left: 15rpx;" bindtap="setShapeType" data-type="{{SHAPE.SELECT}}"></image>
+      <image class="image1" src="../../icon/move.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; margin-left: 15rpx; background: #999999" bindtap="setShapeType" data-type="{{SHAPE.SELECT}}" wx:if="{{paintMode === SHAPE.SELECT}}"></image>
+      <image class="image1" src="../../icon/move.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; margin-left: 15rpx;" bindtap="setShapeType" data-type="{{SHAPE.SELECT}}" wx:if="{{paintMode != SHAPE.SELECT}}"></image>
+
+      <image class="image1" src="../../icon/R.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; background: #999999" bindtap="setShapeType" data-type="{{SHAPE.SQUARE}}" wx:if="{{paintMode === SHAPE.SQUARE}}"></image>
+      <image class="image1" src="../../icon/R.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.SQUARE}}" wx:if="{{paintMode != SHAPE.SQUARE}}"></image>
+
+      <image class="image1" src="../../icon/tx-fill-pinghangsibianxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; background: #999999" bindtap="setShapeType" data-type="{{SHAPE.PARALLELOGRAM}}" wx:if="{{paintMode === SHAPE.PARALLELOGRAM}}"></image>
+      <image class="image1" src="../../icon/tx-fill-pinghangsibianxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.PARALLELOGRAM}}" wx:if="{{paintMode != SHAPE.PARALLELOGRAM}}"></image>
+
+      <image class="image1" src="../../icon/lingxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; background: #999999" bindtap="setShapeType" data-type="{{SHAPE.DIAMOND}}" wx:if="{{paintMode === SHAPE.DIAMOND}}"></image>
+      <image class="image1" src="../../icon/lingxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.DIAMOND}}" wx:if="{{paintMode != SHAPE.DIAMOND}}"></image>
+
+      <image class="image1" src="../../icon/tx-fill-tuoyuanxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; background: #999999" bindtap="setShapeType" data-type="{{SHAPE.ELLIPSE}}" wx:if="{{paintMode === SHAPE.ELLIPSE}}"></image>
+      <image class="image1" src="../../icon/tx-fill-tuoyuanxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ELLIPSE}}" wx:if="{{paintMode != SHAPE.ELLIPSE}}"></image>
+
+      <image class="image1" src="../../icon/icon-test55.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; background: #999999" bindtap="setShapeType" data-type="{{SHAPE.ARROW}}" wx:if="{{paintMode === SHAPE.ARROW}}"></image>
+      <image class="image1" src="../../icon/icon-test55.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ARROW}}" wx:if="{{paintMode != SHAPE.ARROW}}"></image>
+
+      <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; background: #999999" bindtap="setShapeType" data-type="{{SHAPE.TEXT}}" wx:if="{{paintMode === SHAPE.TEXT}}"></image>
+      <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.TEXT}}" wx:if="{{paintMode != SHAPE.TEXT}}"></image>
+
+      <image class="image1" src="../../icon/edit-filling.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="editText"></image>
+      <image class="image1" src="../../icon/icon-test11.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteElementSelected"></image>
+
+
+      <!-- <image class="image1" src="../../icon/move.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; margin-left: 15rpx;" bindtap="setShapeType" data-type="{{SHAPE.SELECT}}"></image>
       <image class="image1" src="../../icon/R.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.SQUARE}}"></image>
       <image class="image1" src="../../icon/tx-fill-pinghangsibianxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.PARALLELOGRAM}}"></image>
       <image class="image1" src="../../icon/lingxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.DIAMOND}}"></image>
       <image class="image1" src="../../icon/tx-fill-tuoyuanxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ELLIPSE}}"></image>
       <image class="image1" src="../../icon/icon-test55.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ARROW}}"></image>
       <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.TEXT}}"></image>
-      <!-- <image class="image1" src="../../icon/template_delete.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteElementSelected"></image> -->
       <image class="image1" src="../../icon/edit-filling.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="editText"></image>
-      <image class="image1" src="../../icon/icon-test11.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteElementSelected"></image>
+      <image class="image1" src="../../icon/icon-test11.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteElementSelected"></image> -->
+      <!-- <image class="image1" src="../../icon/template_delete.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteElementSelected"></image> -->
 
       <!-- Select Button -->
 
