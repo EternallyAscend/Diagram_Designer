@@ -18,7 +18,7 @@ Page({
     },
     patterns: [],
     paintMode: 0, // SHAPE->SELECT
-    boardScale: 1,
+    boardScale: 1.0,
     boardX: 0,
     boardY: 0,
     selected: null,
@@ -395,7 +395,7 @@ Page({
         this.data.canvas.width = this.data.windowWidth.toString()
         this.data.canvas.height = (this.data.scrollViewHeight*this.data.windowWidth/750).toString()
         console.log(this.data.canvas.width, this.data.canvas.height)
-        this.test()
+        // this.test()
         //console.log("res:", res)
         //console.log(res[0])
         //console.log(this.data.canvas)
@@ -510,13 +510,20 @@ Page({
 
   zoomIn: function() {
     // this.data.boardScale += 0.2
-    if (this.data.boardScale >= 1.6) {
+    if (this.data.boardScale >= 1.8) {
       return
     }
+    // this.showToast({
+    //   title: this.data.boardScale,
+    // })
     this.setData({
       boardScale: (this.data.boardScale + 0.2).toFixed(2)
     })
+    wx.showToast({
+      title: this.data.boardScale,
+    })
     this.drawAllObjects()
+    return
   },
 
   zoomOut: function() {
@@ -528,6 +535,7 @@ Page({
       boardScale: (this.data.boardScale - 0.2).toFixed(2)
     })
     this.drawAllObjects()
+    return
   },
 
   deleteElementSelected: function() {
