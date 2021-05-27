@@ -395,7 +395,7 @@ Page({
         this.data.canvas.width = this.data.windowWidth.toString()
         this.data.canvas.height = (this.data.scrollViewHeight*this.data.windowWidth/750).toString()
         console.log(this.data.canvas.width, this.data.canvas.height)
-        this.test()
+        //this.test()
         //console.log("res:", res)
         //console.log(res[0])
         //console.log(this.data.canvas)
@@ -513,8 +513,9 @@ Page({
     if (this.data.boardScale >= 1.6) {
       return
     }
+    console.log(this.data.boardScale)
     this.setData({
-      boardScale: (this.data.boardScale + 0.2).toFixed(2)
+      boardScale: (parseFloat(this.data.boardScale) + 0.2).toFixed(2)
     })
     this.drawAllObjects()
   },
@@ -524,8 +525,9 @@ Page({
     if (this.data.boardScale <= 0.2) {
       return
     }
+    console.log(this.data.boardScale)
     this.setData({
-      boardScale: (this.data.boardScale - 0.2).toFixed(2)
+      boardScale: (parseFloat(this.data.boardScale) - 0.2).toFixed(2)
     })
     this.drawAllObjects()
   },
