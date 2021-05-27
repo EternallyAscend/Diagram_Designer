@@ -132,12 +132,14 @@ Page({
         latest: new Date().toLocaleString(),
       },
       success: res => {
-        console.log(res);
+        wx.showToast({
+          title: 'Save OK!',
+        })
       },
       fail: err => {
         wx.showToast({
           icon: 'none',
-          title: 'save failed title',
+          title: 'Save failed.',
         })
       }
     })
@@ -189,7 +191,7 @@ Page({
             })
           } else {
             wx.showToast({
-              title: 'Else',
+              title: 'Cancel.',
             })
             return;
           }
@@ -434,7 +436,7 @@ Page({
     query.select("#Canvas")
       .fields({node: true, size: true})
       .exec((res)=>{
-        this.readImage(this.data.graphId);
+        // this.readImage(this.data.graphId);
         this.setData({
           canvas: res[0].node
         })
@@ -462,18 +464,18 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    if (this.data.id) {
-      this.saveFigure();
-    }
+    // var pages = getCurrentPages();
+    // var pageBack = pages[pages.length - 2]
+    // pageBack.onLoad()
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    if (this.data.id) {
-      this.saveFigure();
-    }
+    // var pages = getCurrentPages();
+    // var pageBack = pages[pages.length - 2]
+    // pageBack.onLoad()
   },
 
   /**
@@ -516,9 +518,6 @@ Page({
     console.log(this.data.boardScale)
     this.setData({
       boardScale: (parseFloat(this.data.boardScale) + 0.2).toFixed(2)
-    })
-    wx.showToast({
-      title: this.data.boardScale,
     })
     this.drawAllObjects()
     return
