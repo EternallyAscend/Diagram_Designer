@@ -408,44 +408,54 @@ Page({
       ctx.fill()
     }
     else {
-      if (obj.type == this.data.SHAPE.SQUARE) {
-        var objX = obj.realX - obj.width / 2
-        var objY = obj.realY - obj.height / 2
-        ctx.strokeRect(objX, objY, obj.width, obj.height)
-      }
-      else if (obj.type == this.data.SHAPE.TEXT) {
+      if (obj.type == this.data.SHAPE.TEXT) {
         ctx.font = obj.size + "pt Calibri"
         var objX = obj.realX - ctx.measureText(obj.text).width / 2
         var objY = obj.realY + obj.size / 2
+        //ctx.font = obj.size + "px SimHei"
         ctx.fillText(obj.text, objX, objY)
+        //ctx.draw()
       }
-      else if (obj.type == this.data.SHAPE.DIAMOND) {
-        ctx.beginPath()
-        ctx.moveTo(obj.realX - obj.width / 2, obj.realY)
-        ctx.lineTo(obj.realX , obj.realY - obj.height / 2)
-        ctx.lineTo(obj.realX + obj.width / 2, obj.realY)
-        ctx.lineTo(obj.realX , obj.realY + obj.height / 2)
-        ctx.closePath()
-        ctx.stroke()
-      }
-      else if (obj.type == this.data.SHAPE.PARALLELOGRAM) {
-        ctx.beginPath()
-        ctx.moveTo(obj.realX + obj.width / 2, obj.realY - obj.height / 2)
-        ctx.lineTo(obj.realX - obj.width / 4, obj.realY - obj.height / 2)
-        ctx.lineTo(obj.realX - obj.width / 2, obj.realY + obj.height / 2)
-        ctx.lineTo(obj.realX + obj.width / 4, obj.realY + obj.height / 2)
-        ctx.closePath()
-        ctx.stroke()
-      }
-      else if (obj.type == this.data.SHAPE.ELLIPSE) {
-        ctx.beginPath()
-        const r = obj.width * 0.2
-        ctx.arc(obj.realX + obj.width / 2 - r, obj.realY - obj.height / 2 + r, r, Math.PI * 1.5, 0)
-        ctx.arc(obj.realX + obj.width / 2 - r, obj.realY + obj.height / 2 - r, r, 0, Math.PI * 0.5)
-        ctx.arc(obj.realX - obj.width / 2 + r, obj.realY + obj.height / 2 - r, r, Math.PI * 0.5, Math.PI)
-        ctx.arc(obj.realX - obj.width / 2 + r, obj.realY - obj.height / 2 + r, r, Math.PI, Math.PI * 1.5)
-        ctx.closePath()
-        ctx.stroke()
+      else {
+        if (obj.text != ""){
+          ctx.font = "14pt Calibri"
+          var objX = obj.realX - ctx.measureText(obj.text).width / 2
+          var objY = obj.realY + 7
+          ctx.fillText(obj.text, objX, objY)
+        }
+        if (obj.type == this.data.SHAPE.SQUARE) {
+          var objX = obj.realX - obj.width / 2
+          var objY = obj.realY - obj.height / 2
+          ctx.strokeRect(objX, objY, obj.width, obj.height)
+        }
+        else if (obj.type == this.data.SHAPE.DIAMOND) {
+          ctx.beginPath()
+          ctx.moveTo(obj.realX - obj.width / 2, obj.realY)
+          ctx.lineTo(obj.realX , obj.realY - obj.height / 2)
+          ctx.lineTo(obj.realX + obj.width / 2, obj.realY)
+          ctx.lineTo(obj.realX , obj.realY + obj.height / 2)
+          ctx.closePath()
+          ctx.stroke()
+        }
+        else if (obj.type == this.data.SHAPE.PARALLELOGRAM) {
+          ctx.beginPath()
+          ctx.moveTo(obj.realX + obj.width / 2, obj.realY - obj.height / 2)
+          ctx.lineTo(obj.realX - obj.width / 4, obj.realY - obj.height / 2)
+          ctx.lineTo(obj.realX - obj.width / 2, obj.realY + obj.height / 2)
+          ctx.lineTo(obj.realX + obj.width / 4, obj.realY + obj.height / 2)
+          ctx.closePath()
+          ctx.stroke()
+        }
+        else if (obj.type == this.data.SHAPE.ELLIPSE) {
+          ctx.beginPath()
+          const r = obj.width * 0.2
+          ctx.arc(obj.realX + obj.width / 2 - r, obj.realY - obj.height / 2 + r, r, Math.PI * 1.5, 0)
+          ctx.arc(obj.realX + obj.width / 2 - r, obj.realY + obj.height / 2 - r, r, 0, Math.PI * 0.5)
+          ctx.arc(obj.realX - obj.width / 2 + r, obj.realY + obj.height / 2 - r, r, Math.PI * 0.5, Math.PI)
+          ctx.arc(obj.realX - obj.width / 2 + r, obj.realY - obj.height / 2 + r, r, Math.PI, Math.PI * 1.5)
+          ctx.closePath()
+          ctx.stroke()
+        }
       }
     }
   },
