@@ -40,7 +40,7 @@
     </view>
     <!-- Figure Area -->
     <view>
-      <canvas type="2d" id="Canvas" style="height: {{scrollViewHeight}}rpx; width: {{windowWidth}}px;" bindtouchstart="onTouchCanvas" bindtouchend="onTouchEndCanvas" bindtouchmove="onTouchMoveCanvas"></canvas>
+      <canvas disable-scroll="true" type="2d" id="Canvas" style="height: {{scrollViewHeight}}rpx; width: {{windowWidth}}px;" bindtouchstart="onTouchCanvas" bindtouchend="onTouchEndCanvas" bindtouchmove="onTouchMoveCanvas"></canvas>
     </view>
     <!-- Bottom Control Tool Bar -->
     <view>      
