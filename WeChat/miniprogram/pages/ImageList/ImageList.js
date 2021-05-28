@@ -38,7 +38,7 @@ Page({
 
   onGetOpenid: function() {
     wx.cloud.callFunction({
-      name: 'login',
+      name: 'getOpenid',
       data: {},
       success: res => {
         app.globalData.openid = res.result.openid;
