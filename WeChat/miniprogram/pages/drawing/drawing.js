@@ -372,7 +372,7 @@ Page({
         })
         this.data.canvas.width = this.data.windowWidth.toString()
         this.data.canvas.height = (this.data.scrollViewHeight*this.data.windowWidth/750).toString()
-        console.log(this.data.canvas.width, this.data.canvas.height)
+        //console.log(this.data.canvas.width, this.data.canvas.height)
         //this.test()
         //console.log("res:", res)
         //console.log(res[0])
@@ -491,7 +491,7 @@ Page({
     if (this.data.boardScale >= 1.8) {
       return
     }
-    console.log(this.data.boardScale)
+    console.log("boardScale: ",this.data.boardScale)
     this.setData({
       boardScale: (parseFloat(this.data.boardScale) + 0.2).toFixed(2)
     })
@@ -504,7 +504,7 @@ Page({
     if (this.data.boardScale <= 0.2) {
       return
     }
-    console.log(this.data.boardScale)
+    console.log("boardScale: ",this.data.boardScale)
     this.setData({
       boardScale: (parseFloat(this.data.boardScale) - 0.2).toFixed(2)
     })
@@ -593,8 +593,8 @@ Page({
       type: this.data.SHAPE.ARROW,
       path: [],
     })
-    console.log(start)
-    console.log(end)
+    //console.log(start)
+    //console.log(end)
     // start.arrows.push({arrow, startDirection})
     // end.arrows.push({arrow, endDirection})
     //this.adjustArrow(arrow)
@@ -657,7 +657,7 @@ Page({
       else return {x: grid.horizon[x], y: grid.vertical[y]}
     }
 
-    console.log("left ",left, " up ", up, " parellel ", parellel, " startOut ", startOut, " endOut ", endOut)
+    //console.log("left ",left, " up ", up, " parellel ", parellel, " startOut ", startOut, " endOut ", endOut)
     
     if(startOut){
       arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTERSTART))
@@ -666,23 +666,23 @@ Page({
           arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTER))
           arrow.path.push(trans(POS_COR.OUTEREND, POS_COR.CENTER))
           arrow.path.push(trans(POS_COR.OUTEREND, POS_COR.CENTEREND))
-          console.log("startOut endOut parellel")
+          //console.log("startOut endOut parellel")
         }
         else{
           arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.OUTEREND))
           arrow.path.push(trans(POS_COR.CENTEREND, POS_COR.OUTEREND))
-          console.log("startOut endOut !parellel")
+          //console.log("startOut endOut !parellel")
         }
       }
       else {
         if(parellel){
           arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTEREND))
-          console.log("startOut !endOut parellel")
+          //console.log("startOut !endOut parellel")
         }
         else{
           arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTER))
           arrow.path.push(trans(POS_COR.CENTEREND, POS_COR.CENTER))
-          console.log("startOut !endOut !parellel")
+          //console.log("startOut !endOut !parellel")
         }
       }
     }
@@ -691,24 +691,24 @@ Page({
         if(parellel){
           arrow.path.push(trans(POS_COR.OUTEREND, POS_COR.CENTERSTART))
           arrow.path.push(trans(POS_COR.OUTEREND, POS_COR.CENTEREND))
-          console.log("!startOut endOut parellel")
+          //console.log("!startOut endOut parellel")
         }
         else{
           arrow.path.push(trans(POS_COR.INNERSTART, POS_COR.CENTERSTART))
           arrow.path.push(trans(POS_COR.INNERSTART, POS_COR.OUTEREND))
           arrow.path.push(trans(POS_COR.CENTEREND, POS_COR.OUTEREND))
-          console.log("!startOut endOut !parellel")
+          //console.log("!startOut endOut !parellel")
         }
       }
       else{
         if(parellel){
           arrow.path.push(trans(POS_COR.INNERSTART, POS_COR.CENTERSTART))
           arrow.path.push(trans(POS_COR.INNERSTART, POS_COR.CENTEREND))
-          console.log("!startOut !endOut parellel")
+          //console.log("!startOut !endOut parellel")
         }
         else{
           arrow.path.push(trans(POS_COR.CENTEREND, POS_COR.CENTERSTART))
-          console.log("!startOut !endOut !parellel")
+          //console.log("!startOut !endOut !parellel")
         }
       }
     }
@@ -734,8 +734,8 @@ Page({
     vertical.push((arrow.start.realY + arrow.end.realY) / 2)
     vertical.splice(4, 0, ...tail)
 
-    console.log(horizon)
-    console.log(vertical)
+    //console.log(horizon)
+    //console.log(vertical)
     return {horizon: horizon, vertical: vertical}
 
     // horizon.push(left?arrow.start.x - arrow.start.width/2 - 10:arrow.start.x + arrow.start.width/2 + 10)
@@ -756,20 +756,22 @@ Page({
   },
 
   findObject: function(x, y){
+    // comparation between real coodinate
+    
     // var mapCor = (cor, axe)=>{
     //   if(axe) return (cor - this.data.boardX)*this.data.boardScale
     //   else return (cor - this.data.boardY)*this.data.boardScale
     // }
     //console.log(this.data.patterns.findIndex)
-    var findInPatterns = (value, index, array)=>{
+    var findInPatterns = (value)=>{
       console.log(x, y, value)
       if(value.type == this.data.SHAPE.TEXT){
         const ctx = this.data.canvas.getContext("2d")
         var metrics =ctx.measureText(value.text);
-        console.log(metrics)
-        console.log(x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2&&
-          y > value.realY - value.size / 2 && y < value.realY + value.size / 2)
-        return x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2&&
+        // console.log(metrics)
+        // console.log(x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2 &&
+        //   y > value.realY - value.size / 2 && y < value.realY + value.size / 2)
+        return x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2 &&
         y > value.realY - value.size / 2 && y < value.realY + value.size / 2
       }
       if(value.type == this.data.SHAPE.ARROW){
@@ -809,8 +811,8 @@ Page({
             length = x
             width = y
           }
-          console.log(segment)
-          console.log(length, width)
+          // console.log(segment)
+          // console.log(length, width)
           if(between(length, segment.start, segment.end) && between(width, segment.pos + 3, segment.pos - 3))
             return true
           segment = {
@@ -841,18 +843,18 @@ Page({
           length = x
           width = y
         }
-        console.log(segment)
-        console.log(length, width)
+        // console.log(segment)
+        // console.log(length, width)
         if(between(length, segment.start, segment.end) && between(width, segment.pos + 3, segment.pos - 3))
           return true
         return false
       }
       else{
-        return this.isInPattern(x, y, value)
+        return this.isInPattern({x, y}, value)
       }
     }
     var index = this.data.patterns.findIndex(findInPatterns)
-    console.log(index)
+    // console.log(index)
     return index
   },
 
@@ -883,9 +885,13 @@ Page({
     const ctx = this.data.canvas.getContext("2d")
     //console.log(ctx)
     ctx.clearRect(0, 0, this.data.canvas.width, this.data.canvas.height)
+    ctx.save()
+    ctx.translate(-this.data.boardX, -this.boardY)
+    ctx.scale(this.data.boardScale, this.data.boardScale)
     this.data.patterns.forEach((value)=>{
       this.drawObject(value, ctx, value == this.data.selected)
     })
+    ctx.restore()
     // for (var i = 0; i < this.data.patterns.length; i++) {
     //   this.drawObject(this.data.patterns[i], ctx, this.data.patterns[i] == this.data.selected)
     // }
@@ -893,11 +899,11 @@ Page({
 
   drawObject: function(obj, ctx, selected=false){
     //console.log(obj)
-    const AXE = {X: true, Y: false}
-    var mapCor = (cor, axe)=>{
-      if(axe) return (cor - this.data.boardX)*this.data.boardScale
-      else return (cor - this.data.boardY)*this.data.boardScale
-    }
+    // const AXE = {X: true, Y: false}
+    // var mapCor = (cor, axe)=>{
+    //   if(axe) return (cor - this.data.boardX)*this.data.boardScale
+    //   else return (cor - this.data.boardY)*this.data.boardScale
+    // }
     if(selected) {
       ctx.setLineDash([2,2])
     }
@@ -945,36 +951,34 @@ Page({
           endY = obj.end.realY
           break
       }
-      //console.log("an arrow")
       ctx.beginPath()
-      ctx.moveTo(mapCor(startX, AXE.X), mapCor(startY, AXE.Y))
+      ctx.moveTo(startX, startY)
       console.log(startX, startY)
       for(var point = 0; point < obj.path.length; point++){
-        ctx.lineTo(mapCor(obj.path[point].x, AXE.X), mapCor(obj.path[point].y, AXE.Y))
+        ctx.lineTo(obj.path[point].x, obj.path[point].y)
         console.log(obj.path[point])
       }
-      ctx.lineTo(mapCor(endX, AXE.X), mapCor(endY, AXE.Y))
+      ctx.lineTo(endX, endY)
       console.log(endX, endY)
       ctx.stroke()
-      //ctx.draw()
       ctx.beginPath()
-      ctx.moveTo(mapCor(endX, AXE.X), mapCor(endY, AXE.Y))
+      ctx.moveTo(endX, endY)
       switch(obj.endDirection){
         case this.data.DIRECTION.UP:
-          ctx.lineTo(mapCor(endX - 2, AXE.X), mapCor(endY - 3, AXE.Y))
-          ctx.lineTo(mapCor(endX + 2, AXE.X), mapCor(endY - 3, AXE.Y))
+          ctx.lineTo(endX - 2, endY - 3)
+          ctx.lineTo(endX + 2, endY - 3)
           break
         case this.data.DIRECTION.DOWN:
-          ctx.lineTo(mapCor(endX - 2, AXE.X), mapCor(endY + 3, AXE.Y))
-          ctx.lineTo(mapCor(endX + 2, AXE.X), mapCor(endY + 3, AXE.Y))
+          ctx.lineTo(endX - 2, endY + 3)
+          ctx.lineTo(endX + 2, endY + 3)
           break
         case this.data.DIRECTION.RIGHT:
-          ctx.lineTo(mapCor(endX + 3, AXE.X), mapCor(endY - 2, AXE.Y))
-          ctx.lineTo(mapCor(endX + 3, AXE.X), mapCor(endY + 2, AXE.Y))
+          ctx.lineTo(endX + 3, endY - 2)
+          ctx.lineTo(endX + 3, endY + 2)
           break
         case this.data.DIRECTION.LEFT:  
-          ctx.lineTo(mapCor(endX - 3, AXE.X), mapCor(endY + 2, AXE.Y))
-          ctx.lineTo(mapCor(endX - 3, AXE.X), mapCor(endY - 2, AXE.Y))
+          ctx.lineTo(endX - 3, endY + 2)
+          ctx.lineTo(endX - 3, endY - 2)
           break
       }
       ctx.closePath()
@@ -982,16 +986,14 @@ Page({
     }
     else {
       if (obj.type == this.data.SHAPE.SQUARE) {
-        var objX = mapCor(obj.realX - obj.width / 2, AXE.X)
-        var objY = mapCor(obj.realY - obj.height / 2, AXE.Y)
-        ctx.strokeRect(objX, objY, obj.width*this.data.boardScale, obj.height*this.data.boardScale)
-        console.log(obj.width*this.data.boardScale)
-        console.log(obj.height*this.data.boardScale)
+        var objX = obj.realX - obj.width / 2
+        var objY = obj.realY - obj.height / 2
+        ctx.strokeRect(objX, objY, obj.width, obj.height)
       }
       else if (obj.type == this.data.SHAPE.TEXT) {
         ctx.font = obj.size + "pt Calibri"
-        var objX = mapCor(obj.realX - ctx.measureText(obj.text).width / 2, AXE.X)
-        var objY = mapCor(obj.realY + obj.size / 2, AXE.Y)
+        var objX = obj.realX - ctx.measureText(obj.text).width / 2
+        var objY = obj.realY + obj.size / 2
         if(selected){
           ctx.strokeRect(objX, mapCor(obj.realY - obj.size / 2, AXE.Y), ctx.measureText(obj.text).width, obj.size)
         }
@@ -1001,50 +1003,58 @@ Page({
       }
       else if (obj.type == this.data.SHAPE.DIAMOND) {
         ctx.beginPath()
-        ctx.moveTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY, AXE.Y))
-        ctx.lineTo(mapCor(obj.realX , AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
-        ctx.lineTo(mapCor(obj.realX + obj.width / 2, AXE.X), mapCor(obj.realY, AXE.Y))
-        ctx.lineTo(mapCor(obj.realX , AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
+        ctx.moveTo(obj.realX - obj.width / 2, obj.realY)
+        ctx.lineTo(obj.realX , obj.realY - obj.height / 2)
+        ctx.lineTo(obj.realX + obj.width / 2, obj.realY)
+        ctx.lineTo(obj.realX , obj.realY + obj.height / 2)
         ctx.closePath()
         ctx.stroke()
       }
       else if (obj.type == this.data.SHAPE.PARALLELOGRAM) {
         ctx.beginPath()
-        ctx.moveTo(mapCor(obj.realX + obj.width / 2, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
-        ctx.lineTo(mapCor(obj.realX - obj.width / 4, AXE.X), mapCor(obj.realY - obj.height / 2, AXE.Y))
-        ctx.lineTo(mapCor(obj.realX - obj.width / 2, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
-        ctx.lineTo(mapCor(obj.realX + obj.width / 4, AXE.X), mapCor(obj.realY + obj.height / 2, AXE.Y))
+        ctx.moveTo(obj.realX + obj.width / 2, obj.realY - obj.height / 2)
+        ctx.lineTo(obj.realX - obj.width / 4, obj.realY - obj.height / 2)
+        ctx.lineTo(obj.realX - obj.width / 2, obj.realY + obj.height / 2)
+        ctx.lineTo(obj.realX + obj.width / 4, obj.realY + obj.height / 2)
         ctx.closePath()
         ctx.stroke()
       }
       else if (obj.type == this.data.SHAPE.ELLIPSE) {
         ctx.beginPath()
         const r = obj.width * 0.2
-        ctx.arc(mapCor(obj.realX + obj.width / 2 - r, AXE.X), mapCor(obj.realY - obj.height / 2 + r, AXE.Y), r, Math.PI * 1.5, 0)
-        ctx.arc(mapCor(obj.realX + obj.width / 2 - r, AXE.X), mapCor(obj.realY + obj.height / 2 - r, AXE.Y), r, 0, Math.PI * 0.5)
-        ctx.arc(mapCor(obj.realX - obj.width / 2 + r, AXE.X), mapCor(obj.realY + obj.height / 2 - r, AXE.Y), r, Math.PI * 0.5, Math.PI)
-        ctx.arc(mapCor(obj.realX - obj.width / 2 + r, AXE.X), mapCor(obj.realY - obj.height / 2 + r, AXE.Y), r, Math.PI, Math.PI * 1.5)
+        ctx.arc(obj.realX + obj.width / 2 - r, obj.realY - obj.height / 2 + r, r, Math.PI * 1.5, 0)
+        ctx.arc(obj.realX + obj.width / 2 - r, obj.realY + obj.height / 2 - r, r, 0, Math.PI * 0.5)
+        ctx.arc(obj.realX - obj.width / 2 + r, obj.realY + obj.height / 2 - r, r, Math.PI * 0.5, Math.PI)
+        ctx.arc(obj.realX - obj.width / 2 + r, obj.realY - obj.height / 2 + r, r, Math.PI, Math.PI * 1.5)
         ctx.closePath()
         ctx.stroke()
       }
     }
   },
 
+  touchCoorToReal: function({x, y}){
+    return {
+      x: x / this.data.boardScale + this.data.boardX,
+      y: y / this.data.boardScale + this.data.boardY,
+    }
+  },
 
   onTouchCanvas: function(event){
+    var {x, y} = this.touchCoorToReal(event.touches[0])
     console.log(event)
+    console.log("realx:", x, " realY:", y)
     switch(this.data.paintMode){
       case this.data.SHAPE.SELECT:
-        this.selectObject(event.touches[0].x, event.touches[0].y)
+        this.selectObject(x, y)
         break
       case this.data.SHAPE.SQUARE:
       case this.data.SHAPE.ELLIPSE:
       case this.data.SHAPE.PARALLELOGRAM:
       case this.data.SHAPE.DIAMOND:
-        this.createPattern(event.touches[0].x, event.touches[0].y, this.data.paintMode)
+        this.createPattern(x, y, this.data.paintMode)
         break
       case this.data.SHAPE.ARROW:
-        var index = this.findObject(event.touches[0].x, event.touches[0].y)
+        var index = this.findObject(x, y)
         if(index != -1){
           this.arrow_drawing_cache.touch = event.touches[0].identifier
           this.arrow_drawing_cache.start = this.data.patterns[index]
@@ -1055,8 +1065,8 @@ Page({
         break
       case this.data.SHAPE.TEXT:
         this.setData({
-          x: event.touches[0].x,
-          y: event.touches[0].y,
+          x: x,
+          y: y,
           texts: true,
         })
         break
@@ -1078,20 +1088,21 @@ Page({
           }
         }
         if (touch){
+          var {x, y} = this.touchCoorToReal(touch)
           if(this.arrow_drawing_cache.startDirection == null){
-            var x = touch.x, y = touch.y
-            if (!this.isInPattern(x, y, this.arrow_drawing_cache.start) 
-            && this.isInPattern(this.arrow_drawing_cache.lastX, this.arrow_drawing_cache.lastY, this.arrow_drawing_cache.start)){
-              if (y > this.mapCor(this.arrow_drawing_cache.start.realY + this.arrow_drawing_cache.start.height / 2, this.AXE.Y)){
+            //var x = touch.x, y = touch.y
+            if (!this.isInPattern({x, y}, this.arrow_drawing_cache.start) 
+            && this.isInPattern(this.touchCoorToReal({x: this.arrow_drawing_cache.lastX, y: this.arrow_drawing_cache.lastY}), this.arrow_drawing_cache.start)){
+              if (y > this.arrow_drawing_cache.start.realY + this.arrow_drawing_cache.start.height / 2){
                 this.arrow_drawing_cache.startDirection = this.data.DIRECTION.DOWN
               }
-              else if (x > this.mapCor(this.arrow_drawing_cache.start.realX + this.arrow_drawing_cache.start.width / 2, this.AXE.X)){
+              else if (x > this.arrow_drawing_cache.start.realX + this.arrow_drawing_cache.start.width / 2){
                 this.arrow_drawing_cache.startDirection = this.data.DIRECTION.RIGHT
               }
-              else if (y < this.mapCor(this.arrow_drawing_cache.start.realY - this.arrow_drawing_cache.start.height / 2, this.AXE.Y)){
+              else if (y < this.arrow_drawing_cache.start.realY - this.arrow_drawing_cache.start.height / 2){
                 this.arrow_drawing_cache.startDirection = this.data.DIRECTION.UP
               }
-              else if (x < this.mapCor(this.arrow_drawing_cache.start.realX - this.arrow_drawing_cache.start.width / 2, this.AXE.X)){
+              else if (x < this.arrow_drawing_cache.start.realX - this.arrow_drawing_cache.start.width / 2){
                 this.arrow_drawing_cache.startDirection = this.data.DIRECTION.LEFT
               }
             }
@@ -1101,7 +1112,7 @@ Page({
             }
           }
         }
-        console.log(this.arrow_drawing_cache)
+        //console.log(this.arrow_drawing_cache)
     }
   },
 
@@ -1117,30 +1128,33 @@ Page({
           }
         }
         if (touch){
+          var {x, y} = this.touchCoorToReal(touch)
           console.log("touch:", touch)
-          var x = touch.x, y = touch.y
+          //var x = touch.x, y = touch.y
           console.log("x ", x, "y ", y)
-          var end = this.data.patterns[this.findObject(x, y)]
-          console.log("mapCor(end.realY, this.AXE.Y) ", this.mapCor(end.realY, this.AXE.Y))
+          var endIndex = this.findObject(x, y)
+          if (endIndex < 0) return
+          var end = this.data.patterns[endIndex]
+          //console.log("mapCor(end.realY, this.AXE.Y) ", this.mapCor(end.realY, this.AXE.Y))
           this.arrow_drawing_cache.end = end
-          if(x >= this.mapCor(end.realX + end.width / 4, this.AXE.X)) {
+          if(x >= end.realX + end.width / 4) {
             this.arrow_drawing_cache.endDirection = this.data.DIRECTION.RIGHT
-            console.log("enddir right ", this.arrow_drawing_cache.endDirection)
+            //console.log("enddir right ", this.arrow_drawing_cache.endDirection)
           }
-          else if (x <= this.mapCor(end.realX - end.width / 4, this.AXE.X)) {
+          else if (x <= end.realX - end.width / 4) {
             this.arrow_drawing_cache.endDirection = this.data.DIRECTION.LEFT
-            console.log("enddir left ",this.arrow_drawing_cache.endDirection)
+            //console.log("enddir left ",this.arrow_drawing_cache.endDirection)
           }
-          else if (y >= this.mapCor(end.realY, this.AXE.Y)) {
+          else if (y >= end.realY) {
             this.arrow_drawing_cache.endDirection = this.data.DIRECTION.DOWN
-            console.log("enddir down ",this.arrow_drawing_cache.endDirection)
+            //console.log("enddir down ",this.arrow_drawing_cache.endDirection)
           }
           //else if (y > this.mapCor(end.realY, this.AXE.Y)) 
           else{
             this.arrow_drawing_cache.endDirection = this.data.DIRECTION.UP
-            console.log("enddir up ", this.arrow_drawing_cache.endDirection)
+            //console.log("enddir up ", this.arrow_drawing_cache.endDirection)
           }
-          console.log(this.arrow_drawing_cache)
+          //console.log(this.arrow_drawing_cache)
           this.createArrow(this.arrow_drawing_cache)
           this.drawAllObjects()
         }
@@ -1155,11 +1169,12 @@ Page({
 
   AXE: {X: true, Y: false},
 
-  isInPattern: function(x, y, pattern) {
-    return x > this.mapCor(pattern.realX - pattern.width / 2 , this.AXE.X)
-      && x < this.mapCor(pattern.realX + pattern.width / 2, this.AXE.X)
-      && y > this.mapCor(pattern.realY - pattern.height / 2, this.AXE.Y)
-      && y < this.mapCor(pattern.realY + pattern.height / 2, this.AXE.Y)
+  isInPattern: function({x, y}, pattern) {
+    // comparation between real coodinate
+    return x > pattern.realX - pattern.width / 2
+      && x < pattern.realX + pattern.width / 2
+      && y > pattern.realY - pattern.height / 2
+      && y < pattern.realY + pattern.height / 2
   },
 
   resetArrowTouchCache: function(){
