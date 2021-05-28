@@ -34,6 +34,7 @@ Page({
     navbarHeight: 0,
     headerHeight: 0,
     scrollViewHeight: 0,
+    openid: null,
   },
 
   onGetOpenid: function() {
@@ -41,14 +42,13 @@ Page({
       name: 'getOpenid',
       data: {},
       success: res => {
-        app.globalData.openid = res.result.openid;
-        // this.setData({
-        //   uuid: res.result.openid,
-        // });
+        this.setData({
+          openid: res.result.openid,
+        })
+        this.onLoad()
       },
       fail: err => {
         console.error(err);
-        // this.onGetOpenid();
       }
     });
   },
@@ -156,7 +156,7 @@ Page({
     try {
       const res = await (database.collection('Graph').where({
         // _openid: this.data.uuid,
-        _openid: app.globalData.openid,
+        _openid: this.data.openid,
       }).get())
       console.log(res)
       this.setData({
@@ -170,24 +170,6 @@ Page({
       })
       console.error(err)
     }
-    // await database.collection('Graph').where({
-    //   // _openid: this.data.uuid,
-    //   _openid: app.globalData.openid,
-    // }).get({
-    //   success: res => {
-    //     this.setData({
-    //       figureList: res.data,
-    //       number: res.data.length,
-    //     });
-    //   },
-    //   fail: err => {
-    //     wx.showToast({
-    //       icon: 'none',
-    //       title: 'Loading Failed.'
-    //     })
-    //     console.error(err)
-    //   }
-    // });
   },
 
   initPreview: function(){
@@ -204,15 +186,9 @@ Page({
    */
   onLoad: function (options) {
     // Fetch User Information.
-    if (null == app.globalData.openid) {
+    if (null == this.data.openid) {
       this.onGetOpenid();
     }
-
-    var a = new Array(3)
-    a[0] = 0
-    a[1] = 1
-    a[2] = 2
-    console.log(a)
     
     // Fetch System Information.
     let that = this;
@@ -233,31 +209,7 @@ Page({
         scrollViewHeight: scrollHeight
     });
 
-
-    // let database = wx.cloud.database();
-    // database.collection('Graph').where({
-    //   // _openid: this.data.uuid,
-    //   _openid: app.globalData.openid,
-    // }).get({
-    //   success: res => {
-    //     this.setData({
-    //       figureList: res.data,
-    //       number: res.data.length,
-    //     });
-    //   },
-    //   fail: err => {
-    //     wx.showToast({
-    //       icon: 'none',
-    //       title: 'Loading Failed.'
-    //     })
-    //     console.error(err)
-    //   }
-    // });
-
     this.readDB().then(this.initPreview)
-    
-
-    
   },
 
   /**

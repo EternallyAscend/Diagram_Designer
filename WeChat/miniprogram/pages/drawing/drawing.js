@@ -49,7 +49,8 @@ Page({
     y: 0,
     gap: 10,
     zoom: 100,
-  },
+    openid: null,
+    },
 
   arrow_drawing_cache: {
     touch: null,
@@ -65,16 +66,13 @@ Page({
     const db = wx.cloud.database();
     db.collection('Graph').doc(id).get({
       success: res => {
-        // wx.showToast({
-        //   title: res.data,
-        // })
-        if (res._id != app.globalData.openid) {
+        if (res._id != this.data.openid) {
           this.setData({
             editable: false,
           })
           // db.collection("SharingMap").where({
           //   graph_id: id,
-          //   user_id: app.globalData.openid,
+          //   user_id: this.data.openid,
           // }).get({
           //   success: resi => {
           //     this.setData({
@@ -113,10 +111,12 @@ Page({
 
   onGetOpenid: function() {
     wx.cloud.callFunction({
-      name: 'getOpenid',
+      name: 'login',
       data: {},
       success: res => {
-        app.globalData.openid = res.result.openid;
+        this.setData({
+          openid: res.result.openid,
+        })
       },
       fail: err => {
         console.error(err);
@@ -331,33 +331,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    if (null == app.globalData.openid) {
-      this.onGetOpenid();
+    if (null == this.data.openid) {
+      this.onGetOpenid()
     }
-
-    // if (null == app.globalData.openid) {
-    //   wx.cloud.callFunction({
-    //     name: 'login',
-    //     data: {},
-    //     success: res => {
-    //       app.globalData.openid = res.result.openid;
-    //     },
-    //     fail: err => {
-    //       wx.showToast({
-    //         title: 'No Auth!',
-    //         icon: 'none',
-    //         image: '',
-    //         duration: 1500,
-    //         mask: false,
-    //         success: (result)=>{
-              
-    //         },
-    //         fail: ()=>{},
-    //         complete: ()=>{},
-    //       });
-    //     },
-    //   });
-    // }
     
     // Fetch System Information.
     var that = this;
