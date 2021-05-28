@@ -554,6 +554,10 @@ Page({
     var target = this.data.selected
     if(target){
       target.realX += parseInt(arg.currentTarget.dataset.step) * 10
+      var arrows = this.data.patterns.filter((value) => {
+        return value.type == this.data.SHAPE.ARROW && (value.start == target || value.end == target)
+      })
+      arrows.forEach(this.adjustArrow)
     }
     else{
       this.setData({
@@ -567,6 +571,13 @@ Page({
     var target = this.data.selected
     if(target){
       target.realY += parseInt(arg.currentTarget.dataset.step) * 10
+      var arrows = this.data.patterns.filter((value) => {
+        return value.type == this.data.SHAPE.ARROW && (value.start == target || value.end == target)
+      })
+      arrows.forEach(this.adjustArrow)
+      // for(a in target.arrows){
+      //   this.adjustArrow(target.arrows[a])
+      // }
     }
     else{
       this.setData({
@@ -608,8 +619,8 @@ Page({
     })
     console.log(start)
     console.log(end)
-    start.arrows.push({arrow, startDirection})
-    end.arrows.push({arrow, endDirection})
+    // start.arrows.push({arrow, startDirection})
+    // end.arrows.push({arrow, endDirection})
     //this.adjustArrow(arrow)
     this.data.patterns.push(arrow)
   },
@@ -896,9 +907,12 @@ Page({
     const ctx = this.data.canvas.getContext("2d")
     //console.log(ctx)
     ctx.clearRect(0, 0, this.data.canvas.width, this.data.canvas.height)
-    for (var i = 0; i < this.data.patterns.length; i++) {
-      this.drawObject(this.data.patterns[i], ctx, this.data.patterns[i] == this.data.selected)
-    }
+    this.data.patterns.forEach((value)=>{
+      this.drawObject(value, ctx, value == this.data.selected)
+    })
+    // for (var i = 0; i < this.data.patterns.length; i++) {
+    //   this.drawObject(this.data.patterns[i], ctx, this.data.patterns[i] == this.data.selected)
+    // }
   },
 
   drawObject: function(obj, ctx, selected=false){
