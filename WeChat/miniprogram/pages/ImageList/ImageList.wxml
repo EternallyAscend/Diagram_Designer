@@ -8,7 +8,7 @@
 <!-- Content View -->
 <view wx:if="{{!create}}" style="width:100%; height: {{scrollViewHeight}}px; min-height: 99px;" >
 <!-- <scroll-view style="width:100%; height: {{scrollViewHeight}}px; min-height: 99px; white-space: nowrap;" scroll-y="true"> -->
-<view wx:if="{{number < 0}}" style="position:relative; width: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center; min-height: 100%; height:100%">
+<view wx:if="{{number < 0 || openid == null}}" style="position:relative; width: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center; min-height: 100%; height:100%">
 <!-- <view wx:if="!{{number}}" style="width: 100%; height: 100%; background: #d3d3d3; display:flex; align-items: center; justify-content: center; text-align: center;"> -->
 <text style="display:flex; align-items: center; justify-content: center; text-align: center;">Loading... Please wait.</text>
 </view>

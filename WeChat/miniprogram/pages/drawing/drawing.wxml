@@ -10,19 +10,6 @@
   <view>
     <!-- Top Graph Tool Bar -->
     <view>
-      <!-- <script src="/miniprogram/icon/icon.js">
-        <svg class="icon" aria-hidden="true">
-        
-        </svg>
-      </script>
-      <text class="icon-yuanjiaojuxing3" style="font-size:128rpx"/>
-      <text class="icon-lingxing" style="font-size:128rpx"/>
-      <text class="icon-tx-fill-pinghangsibianxing" style="font-size:128rpx"/>
-      <text class="icon-tx-fill-tuoyuanxing" style="font-size:128rpx"/>
-      <text class="icon-icon-test55" style="font-size:128rpx"/>
-      <text class="icon-A" style="font-size:128rpx"/>
-      <span class="icon-A" style="font-size:128rpx"></span> -->
-      <!-- <image src="/miniprogram/icon/icon-test2.svg" class='seat-img'></image> -->
 
       <image class="image1" src="../../icon/move.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; margin-left: 15rpx; background: #999999" bindtap="setShapeType" data-type="{{SHAPE.SELECT}}" wx:if="{{paintMode === SHAPE.SELECT}}"></image>
       <image class="image1" src="../../icon/move.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; margin-left: 15rpx;" bindtap="setShapeType" data-type="{{SHAPE.SELECT}}" wx:if="{{paintMode != SHAPE.SELECT}}"></image>
@@ -48,27 +35,8 @@
       <image class="image1" src="../../icon/edit-filling.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="editText"></image>
       <image class="image1" src="../../icon/icon-test11.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteElementSelected"></image>
 
-
-      <!-- <image class="image1" src="../../icon/move.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx; margin-left: 15rpx;" bindtap="setShapeType" data-type="{{SHAPE.SELECT}}"></image>
-      <image class="image1" src="../../icon/R.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.SQUARE}}"></image>
-      <image class="image1" src="../../icon/tx-fill-pinghangsibianxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.PARALLELOGRAM}}"></image>
-      <image class="image1" src="../../icon/lingxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.DIAMOND}}"></image>
-      <image class="image1" src="../../icon/tx-fill-tuoyuanxing.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ELLIPSE}}"></image>
-      <image class="image1" src="../../icon/icon-test55.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.ARROW}}"></image>
-      <image class="image1" src="../../icon/A.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="setShapeType" data-type="{{SHAPE.TEXT}}"></image>
-      <image class="image1" src="../../icon/edit-filling.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="editText"></image>
-      <image class="image1" src="../../icon/icon-test11.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteElementSelected"></image> -->
-      <!-- <image class="image1" src="../../icon/template_delete.png" mode="aspectFit" style="width: {{headBar}}rpx; height: {{headBar}}rpx;" bindtap="deleteElementSelected"></image> -->
-
       <!-- Select Button -->
 
-      <!-- <text>□</text>
-      <text>▲</text>
-      <text>*</text>
-      <text>→</text>
-      <text>A</text>
-      <text>○</text>
-      <text>■</text> -->
     </view>
     <!-- Figure Area -->
     <view>
@@ -77,24 +45,6 @@
     <!-- Bottom Control Tool Bar -->
     <view>      
       <!-- Save Button -->
-      <!-- <image class="image1" src="../../icon/icon-test19.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx; margin-left: 15rpx;" catchtap="saveFigure"></image>
-      
-      <image class="image1" src="../../icon/icon-test45.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="-1"></image>
-      <image class="image1" src="../../icon/icon-test47.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveVertical" data-step="1"></image>
-
-      <image class="image1" src="../../icon/add-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="zoomIn"></image>
-      
-      <image class="image1" src="../../icon/icon-test5.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="originFigure"></image>
-
-      <image class="image1" src="../../icon/sami-select.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="zoomOut"></image>
-
-      <image class="image1" src="../../icon/icon-test46.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="-1"></image>
-      <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="1"></image>
-      
-      <image class="image1" src="../../icon/icon-test16.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="editText"></image> -->
-
-<!--  -->
-
 
       <image class="image1" src="../../icon/save.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx; margin-left: 15rpx;" catchtap="saveFigure"></image>
       
@@ -111,14 +61,7 @@
       <image class="image1" src="../../icon/icon-test48.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="moveHorizon" data-step="1"></image>
       
       <image class="image1" src="../../icon/ashbin.png" mode="aspectFit" style="width: {{bottomBar}}rpx; height: {{bottomBar}}rpx;" catchtap="deleteFigure"></image>
-      
-      <!-- <text>↑</text>
-      <text>↓</text>
-      <text>+</text>
-      <text>○</text>
-      <text>-</text>
-      <text>←</text>
-      <text>→</text> -->
+
     </view>
     </view>
 </view>

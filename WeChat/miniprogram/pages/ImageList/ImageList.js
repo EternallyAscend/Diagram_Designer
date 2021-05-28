@@ -31,8 +31,6 @@ Page({
     titlesHeight: 40,
     windowHeight: 0,
     windowWidth: 0,
-    navbarHeight: 0,
-    headerHeight: 0,
     scrollViewHeight: 0,
     openid: null,
   },
@@ -96,8 +94,7 @@ Page({
       });
       return;
     }
-    let time = new Date().toLocaleString().substr(0, 10); //.split('/').join('-');
-    // console.log(new Date().toLocaleDateString());
+    let time = new Date().toLocaleString().substr(0, 10);
     let grap = [];
     let database = wx.cloud.database();
     database.collection('Graph').add({
@@ -136,7 +133,6 @@ Page({
   },
 
   openFigure: function(arg) {
-    console.log(arg.currentTarget.dataset.index);
     wx.navigateTo({
       url: '/pages/drawing/drawing?Image=' + arg.currentTarget.dataset.index,
       success: (result) => {
@@ -145,7 +141,6 @@ Page({
         wx.showToast({
           title: 'failed' + res,
         });
-        console.log(res);
       },
       complete: (res) => {},
     });
@@ -155,10 +150,8 @@ Page({
     let database = wx.cloud.database();
     try {
       const res = await (database.collection('Graph').where({
-        // _openid: this.data.uuid,
         _openid: this.data.openid,
       }).get())
-      console.log(res)
       this.setData({
         figureList: res.data,
         number: res.data.length,
@@ -173,10 +166,7 @@ Page({
   },
 
   initPreview: function(){
-    //console.log(this.data.number)
-    //console.log(this.data.figureList[0])
     for (var item in this.data.figureList){
-      console.log(this.data.figureList[item])
       this.drawPreview(item)
     }
   },
@@ -196,8 +186,6 @@ Page({
       success: function(res) {
         that.setData({
           windowHeight: res.windowHeight,
-          navbarHeight: res.navbarHeight,
-          headerHeight: res.navbarHeight,
           windowWidth: res.windowWidth,
         });
       }
@@ -271,22 +259,12 @@ Page({
     query.select("#canvas" + index)
         .fields({node: true, size: true})
         .exec((res)=>{
-          // this.data.canvas = res[0].node
-          console.log(index)
-          //console.log(this.data.figureList[index]['grap'])
           var patterns = this.data.figureList[index]['grap']
           if (!patterns) return
-          //console.log(patterns)
-          // this.data.canvas.width = this.data.windowWidth.toString()
-          // this.data.canvas.height = (this.data.scrollViewHeight*this.data.windowWidth/750).toString()
-          // console.log(this.data.canvas.width, this.data.canvas.height)
           var canvas = res[0].node
           canvas.width = 0.44 * this.data.windowWidth
           canvas.height = 200
           this.drawAllObjects(res[0].node, patterns)
-          // console.log("res:", res)
-          //console.log(canvas)
-          // console.log(this.data.canvas)
         })
   },
   
@@ -295,7 +273,6 @@ Page({
     for (var index in patterns){
       var pattern = patterns[index]
       if(!pattern) continue
-      console.log(pattern)
       if(pattern.type == this.data.SHAPE.ARROW){
         for (var point in pattern.path){
           var p = pattern.path[point]
@@ -335,45 +312,17 @@ Page({
       top: top,
       bottom: bottom,
     }
-    // return patterns.reduce((total, value) => {
-    //   if(value.type == this.data.SHAPE.ARROW){
-    //     var {left, right, bottom, top} = value.path.reduce((total, value) => {
-    //       return {
-    //         left: total.left <= value.x ? total.left : value.x,
-    //         right: total.right >= value.x ? total.right : value.x,
-    //         top: total.top <= value.y ? total.top : value.y,
-    //         bottom: total.bottom >= value.y ? total.bottom : value.y,
-    //       }
-    //     })
-    //   }
-    //   else {
-    //     var left = value.realX - value.width / 2
-    //     var right = value.realX + value.width / 2
-    //     var top = value.realY - value.height / 2
-    //     var bottom = value.realY + value.height / 2
-    //   }
-    //   console.log(left, right, top, bottom)
-    //   return {
-    //     left: total.left <= left ? total.left : left,
-    //     right: total.right >= right ? total.right : right,
-    //     top: total.top <= top ? total.top : top,
-    //     bottom: total.bottom >= bottom ? total.bottom : bottom,
-    //   }
-    // }, {left: undefined, right: undefined, left: undefined, right: undefined})
   },
 
   drawAllObjects: function(canvas, patterns){
     const ctx = canvas.getContext("2d")
     ctx.save()
     var range = this.getImageRange(patterns, ctx)
-    //console.log(canvas)
-    console.log(range)
-    console.log(this.data.windowWidth * 0.44, canvas.height)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.translate(-range.left, -range.top)
     var scaleX = this.data.windowWidth * 0.44 / (range.right - range.left)
     var scaleY = canvas.height / (range.bottom - range.top)
-    var scale //= Math.min(this.data.windowWidth * 0.44 / (range.right - range.left), canvas.height / (range.bottom - range.top))
+    var scale
     if (scaleX < scaleY){
       ctx.translate(0, (canvas.height - scaleX * (range.bottom - range.top)) / 2)
       scale = scaleX
@@ -383,18 +332,12 @@ Page({
       scale = scaleY
     }
     ctx.scale(scale, scale)
-    console.log(ctx)
     patterns.forEach((value) => {
       if(value) this.drawObject(value, ctx)
     })
-    // for (var i = 0; i < patterns.length; i++) {
-    //   if(!patterns[i]) continue
-    //   this.drawObject(patterns[i], ctx)
-    // }
   },
 
   drawObject: function(obj, ctx){
-    //console.log(obj)
     //const AXE = {X: true, Y: false}
     if (obj.type == this.data.SHAPE.ARROW){
       var startX, startY, endX, endY
@@ -436,13 +379,10 @@ Page({
       }
       ctx.beginPath()
       ctx.moveTo(startX, startY)
-      console.log(startX, startY)
       for(var point = 0; point < obj.path.length; point++){
         ctx.lineTo(obj.path[point].x, obj.path[point].y)
-        console.log(obj.path[point])
       }
       ctx.lineTo(endX, endY)
-      console.log(endX, endY)
       ctx.stroke()
       ctx.beginPath()
       ctx.moveTo(endX, endY)

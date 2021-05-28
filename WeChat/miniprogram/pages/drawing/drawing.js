@@ -260,12 +260,7 @@ Page({
         })
         this.data.canvas.width = (r - l).toString()
         this.data.canvas.height = (b - t).toString()
-        // this.test()
-        // console.log(res[0])
-        // console.log(res[0].node)
-        // console.log(this.data.canvas)
         const ctx = this.data.saving.getContext("2d")
-        // console.log(ctx)
         ctx.clearRect(0, 0, this.data.canvas.width, this.data.canvas.height)
         
         for(var i = 0; i < this.data.patterns.length; i++){
@@ -299,7 +294,6 @@ Page({
     wx.saveImageToPhotosAlbum({
         filePath: this.data.imagePath,
         success(res) {
-            console.log('res', res);
             wx.showToast({
                 title: 'Saved!',
                 icon: 'success',
@@ -372,11 +366,6 @@ Page({
         })
         this.data.canvas.width = this.data.windowWidth.toString()
         this.data.canvas.height = (this.data.scrollViewHeight*this.data.windowWidth/750).toString()
-        console.log(this.data.canvas.width, this.data.canvas.height)
-        //this.test()
-        //console.log("res:", res)
-        //console.log(res[0])
-        //console.log(this.data.canvas)
       })
   },
 
@@ -491,7 +480,6 @@ Page({
     if (this.data.boardScale >= 1.8) {
       return
     }
-    console.log(this.data.boardScale)
     this.setData({
       boardScale: (parseFloat(this.data.boardScale) + 0.2).toFixed(2)
     })
@@ -504,7 +492,6 @@ Page({
     if (this.data.boardScale <= 0.2) {
       return
     }
-    console.log(this.data.boardScale)
     this.setData({
       boardScale: (parseFloat(this.data.boardScale) - 0.2).toFixed(2)
     })
@@ -657,7 +644,7 @@ Page({
       else return {x: grid.horizon[x], y: grid.vertical[y]}
     }
 
-    console.log("left ",left, " up ", up, " parellel ", parellel, " startOut ", startOut, " endOut ", endOut)
+    // console.log("left ",left, " up ", up, " parellel ", parellel, " startOut ", startOut, " endOut ", endOut)
     
     if(startOut){
       arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTERSTART))
@@ -666,23 +653,23 @@ Page({
           arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTER))
           arrow.path.push(trans(POS_COR.OUTEREND, POS_COR.CENTER))
           arrow.path.push(trans(POS_COR.OUTEREND, POS_COR.CENTEREND))
-          console.log("startOut endOut parellel")
+          // console.log("startOut endOut parellel")
         }
         else{
           arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.OUTEREND))
           arrow.path.push(trans(POS_COR.CENTEREND, POS_COR.OUTEREND))
-          console.log("startOut endOut !parellel")
+          // console.log("startOut endOut !parellel")
         }
       }
       else {
         if(parellel){
           arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTEREND))
-          console.log("startOut !endOut parellel")
+          // console.log("startOut !endOut parellel")
         }
         else{
           arrow.path.push(trans(POS_COR.OUTERSTART, POS_COR.CENTER))
           arrow.path.push(trans(POS_COR.CENTEREND, POS_COR.CENTER))
-          console.log("startOut !endOut !parellel")
+          // console.log("startOut !endOut !parellel")
         }
       }
     }
@@ -691,24 +678,24 @@ Page({
         if(parellel){
           arrow.path.push(trans(POS_COR.OUTEREND, POS_COR.CENTERSTART))
           arrow.path.push(trans(POS_COR.OUTEREND, POS_COR.CENTEREND))
-          console.log("!startOut endOut parellel")
+          // console.log("!startOut endOut parellel")
         }
         else{
           arrow.path.push(trans(POS_COR.INNERSTART, POS_COR.CENTERSTART))
           arrow.path.push(trans(POS_COR.INNERSTART, POS_COR.OUTEREND))
           arrow.path.push(trans(POS_COR.CENTEREND, POS_COR.OUTEREND))
-          console.log("!startOut endOut !parellel")
+          // console.log("!startOut endOut !parellel")
         }
       }
       else{
         if(parellel){
           arrow.path.push(trans(POS_COR.INNERSTART, POS_COR.CENTERSTART))
           arrow.path.push(trans(POS_COR.INNERSTART, POS_COR.CENTEREND))
-          console.log("!startOut !endOut parellel")
+          // console.log("!startOut !endOut parellel")
         }
         else{
           arrow.path.push(trans(POS_COR.CENTEREND, POS_COR.CENTERSTART))
-          console.log("!startOut !endOut !parellel")
+          // console.log("!startOut !endOut !parellel")
         }
       }
     }
@@ -734,8 +721,8 @@ Page({
     vertical.push((arrow.start.realY + arrow.end.realY) / 2)
     vertical.splice(4, 0, ...tail)
 
-    console.log(horizon)
-    console.log(vertical)
+    // console.log(horizon)
+    // console.log(vertical)
     return {horizon: horizon, vertical: vertical}
 
     // horizon.push(left?arrow.start.x - arrow.start.width/2 - 10:arrow.start.x + arrow.start.width/2 + 10)
@@ -762,13 +749,13 @@ Page({
     // }
     //console.log(this.data.patterns.findIndex)
     var findInPatterns = (value, index, array)=>{
-      console.log(x, y, value)
+      // console.log(x, y, value)
       if(value.type == this.data.SHAPE.TEXT){
         const ctx = this.data.canvas.getContext("2d")
         var metrics =ctx.measureText(value.text);
-        console.log(metrics)
-        console.log(x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2&&
-          y > value.realY - value.size / 2 && y < value.realY + value.size / 2)
+        // console.log(metrics)
+        // console.log(x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2&&
+        //   y > value.realY - value.size / 2 && y < value.realY + value.size / 2)
         return x > value.realX - metrics.width / 2 && x < value.realX + metrics.width / 2&&
         y > value.realY - value.size / 2 && y < value.realY + value.size / 2
       }
@@ -809,8 +796,8 @@ Page({
             length = x
             width = y
           }
-          console.log(segment)
-          console.log(length, width)
+          // console.log(segment)
+          // console.log(length, width)
           if(between(length, segment.start, segment.end) && between(width, segment.pos + 3, segment.pos - 3))
             return true
           segment = {
@@ -841,8 +828,8 @@ Page({
           length = x
           width = y
         }
-        console.log(segment)
-        console.log(length, width)
+        // console.log(segment)
+        // console.log(length, width)
         if(between(length, segment.start, segment.end) && between(width, segment.pos + 3, segment.pos - 3))
           return true
         return false
@@ -859,7 +846,7 @@ Page({
   selectObject: function(x, y){
     //console.log(this.data.patterns)
     var selectedIndex = this.findObject(x, y)
-    console.log(selectedIndex, x, y)
+    // console.log(selectedIndex, x, y)
     if (selectedIndex==-1){
       this.data.selected = null
     }
@@ -867,8 +854,8 @@ Page({
       this.data.patterns.push(this.data.patterns.splice(selectedIndex, 1)[0])
       this.data.selected = this.data.patterns[this.data.patterns.length - 1]
     }
-    console.log(this.data.selected)
-    console.log(this.data.patterns)
+    // console.log(this.data.selected)
+    // console.log(this.data.patterns)
   },
 
   // drawSelection: function(ctx){
@@ -948,13 +935,13 @@ Page({
       //console.log("an arrow")
       ctx.beginPath()
       ctx.moveTo(mapCor(startX, AXE.X), mapCor(startY, AXE.Y))
-      console.log(startX, startY)
+      // console.log(startX, startY)
       for(var point = 0; point < obj.path.length; point++){
         ctx.lineTo(mapCor(obj.path[point].x, AXE.X), mapCor(obj.path[point].y, AXE.Y))
-        console.log(obj.path[point])
+        // console.log(obj.path[point])
       }
       ctx.lineTo(mapCor(endX, AXE.X), mapCor(endY, AXE.Y))
-      console.log(endX, endY)
+      // console.log(endX, endY)
       ctx.stroke()
       //ctx.draw()
       ctx.beginPath()
@@ -985,8 +972,8 @@ Page({
         var objX = mapCor(obj.realX - obj.width / 2, AXE.X)
         var objY = mapCor(obj.realY - obj.height / 2, AXE.Y)
         ctx.strokeRect(objX, objY, obj.width*this.data.boardScale, obj.height*this.data.boardScale)
-        console.log(obj.width*this.data.boardScale)
-        console.log(obj.height*this.data.boardScale)
+        // console.log(obj.width*this.data.boardScale)
+        // console.log(obj.height*this.data.boardScale)
       }
       else if (obj.type == this.data.SHAPE.TEXT) {
         ctx.font = obj.size + "pt Calibri"
@@ -1032,7 +1019,7 @@ Page({
 
 
   onTouchCanvas: function(event){
-    console.log(event)
+    // console.log(event)
     switch(this.data.paintMode){
       case this.data.SHAPE.SELECT:
         this.selectObject(event.touches[0].x, event.touches[0].y)
@@ -1051,7 +1038,7 @@ Page({
           this.arrow_drawing_cache.lastX = event.touches[0].x
           this.arrow_drawing_cache.lastY = event.touches[0].y
         }
-        console.log(this.arrow_drawing_cache)
+        // console.log(this.arrow_drawing_cache)
         break
       case this.data.SHAPE.TEXT:
         this.setData({
@@ -1101,12 +1088,12 @@ Page({
             }
           }
         }
-        console.log(this.arrow_drawing_cache)
+        // console.log(this.arrow_drawing_cache)
     }
   },
 
   onTouchEndCanvas: function(event) {
-    console.log(event)
+    // console.log(event)
     switch(this.data.paintMode){
       case this.data.SHAPE.ARROW:
         var touch
@@ -1117,30 +1104,30 @@ Page({
           }
         }
         if (touch){
-          console.log("touch:", touch)
+          // console.log("touch:", touch)
           var x = touch.x, y = touch.y
-          console.log("x ", x, "y ", y)
+          // console.log("x ", x, "y ", y)
           var end = this.data.patterns[this.findObject(x, y)]
-          console.log("mapCor(end.realY, this.AXE.Y) ", this.mapCor(end.realY, this.AXE.Y))
+          // console.log("mapCor(end.realY, this.AXE.Y) ", this.mapCor(end.realY, this.AXE.Y))
           this.arrow_drawing_cache.end = end
           if(x >= this.mapCor(end.realX + end.width / 4, this.AXE.X)) {
             this.arrow_drawing_cache.endDirection = this.data.DIRECTION.RIGHT
-            console.log("enddir right ", this.arrow_drawing_cache.endDirection)
+            // console.log("enddir right ", this.arrow_drawing_cache.endDirection)
           }
           else if (x <= this.mapCor(end.realX - end.width / 4, this.AXE.X)) {
             this.arrow_drawing_cache.endDirection = this.data.DIRECTION.LEFT
-            console.log("enddir left ",this.arrow_drawing_cache.endDirection)
+            // console.log("enddir left ",this.arrow_drawing_cache.endDirection)
           }
           else if (y >= this.mapCor(end.realY, this.AXE.Y)) {
             this.arrow_drawing_cache.endDirection = this.data.DIRECTION.DOWN
-            console.log("enddir down ",this.arrow_drawing_cache.endDirection)
+            // console.log("enddir down ",this.arrow_drawing_cache.endDirection)
           }
           //else if (y > this.mapCor(end.realY, this.AXE.Y)) 
           else{
             this.arrow_drawing_cache.endDirection = this.data.DIRECTION.UP
-            console.log("enddir up ", this.arrow_drawing_cache.endDirection)
+            // console.log("enddir up ", this.arrow_drawing_cache.endDirection)
           }
-          console.log(this.arrow_drawing_cache)
+          // console.log(this.arrow_drawing_cache)
           this.createArrow(this.arrow_drawing_cache)
           this.drawAllObjects()
         }
