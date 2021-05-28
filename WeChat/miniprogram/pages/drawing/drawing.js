@@ -95,6 +95,7 @@ Page({
           patterns: res.data.grap,
           // queryResult: JSON.stringify(res.data, null, 2)
         });
+        this.bindArrows()
         if (this.data.canvas) {
           this.drawAllObjects()
         }
@@ -486,6 +487,21 @@ Page({
     this.drawAllObjects()
   },
 
+  bindArrows: function () {
+    console.log(this.data.patterns)
+    var arrows = this.data.patterns.filter((value) => {
+      return value.type == this.data.SHAPE.ARROW
+    })
+    console.log(arrows)
+    arrows.forEach((value) => {
+      var arrow = value
+      this.data.patterns.forEach((value)=>{
+        if (value.uuid == arrow.start.uuid) arrow.start = value
+        if (value.uuid == arrow.end.uuid) arrow.end = value
+      })
+    })
+  },
+
   zoomIn: function() {
     // this.data.boardScale += 0.2
     if (this.data.boardScale >= 1.8) {
@@ -520,20 +536,46 @@ Page({
         title: 'Not selected.',
       })
     } else {
-      this.data.patterns.pop()
+      var pattern = this.data.selected
       this.data.selected = null
+      var relatedIndex = []
+      this.data.patterns.forEach((value, index) => {
+        // console.log(value)
+        console.log(value.type == this.data.SHAPE.ARROW && (value.start == pattern || value.end == pattern))
+        if (value.type == this.data.SHAPE.ARROW) { 
+          console.log(pattern)
+          console.log(value.start)
+          console.log(value.end)
+          if (value.start.uuid == pattern.uuid || value.end.uuid == pattern.uuid){
+            relatedIndex.push(index)
+          }
+        }
+      })
+      this.data.patterns.pop()
+      console.log(relatedIndex)
+      relatedIndex.reverse().forEach((value) => {
+        this.data.patterns.splice(value, 1)
+      })
       this.drawAllObjects()
     }
+  },
+
+  guid: function () {
+    function S4() {
+      return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    }
+    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
   },
 
   moveHorizon: function(arg) {
     var target = this.data.selected
     if(target){
       target.realX += parseInt(arg.currentTarget.dataset.step) * 10
-      var arrows = this.data.patterns.filter((value) => {
-        return value.type == this.data.SHAPE.ARROW && (value.start == target || value.end == target)
+      this.data.patterns.forEach((value) => {
+        if(value.type == this.data.SHAPE.ARROW && (value.start.uuid == target.uuid || value.end.uuid == target.uuid)){
+          this.adjustArrow(value)
+        }
       })
-      arrows.forEach(this.adjustArrow)
     }
     else{
       this.setData({
@@ -548,8 +590,9 @@ Page({
     if(target){
       target.realY += parseInt(arg.currentTarget.dataset.step) * 10
       var arrows = this.data.patterns.filter((value) => {
-        return value.type == this.data.SHAPE.ARROW && (value.start == target || value.end == target)
+        return value.type == this.data.SHAPE.ARROW && (value.start.uuid == target.uuid || value.end.uuid == target.uuid)
       })
+      console.log(arrows)
       arrows.forEach(this.adjustArrow)
       // for(a in target.arrows){
       //   this.adjustArrow(target.arrows[a])
@@ -565,17 +608,18 @@ Page({
   
   createPattern: function(x, y, type) {
     this.data.patterns.push({
+      uuid: this.guid(),
       realX: x,
       realY: y,
       height: 50,
       width: 80,
       type: type,
-      arrows: [],
     })
   },
 
   createText: function(x, y, text) {
     this.data.patterns.push({
+      uuid: this.guid(),
       realX: x,
       realY: y,
       size: 30,
@@ -586,6 +630,7 @@ Page({
 
   createArrow: function({start, end, startDirection, endDirection}){
     var arrow = this.adjustArrow({
+      uuid: this.guid(),
       start: start,
       startDirection: startDirection,
       end: end,
@@ -861,7 +906,7 @@ Page({
   selectObject: function(x, y){
     //console.log(this.data.patterns)
     var selectedIndex = this.findObject(x, y)
-    console.log(selectedIndex, x, y)
+    // console.log(selectedIndex, x, y)
     if (selectedIndex==-1){
       this.data.selected = null
     }
@@ -886,7 +931,7 @@ Page({
     //console.log(ctx)
     ctx.clearRect(0, 0, this.data.canvas.width, this.data.canvas.height)
     ctx.save()
-    ctx.translate(-this.data.boardX, -this.boardY)
+    ctx.translate(-this.data.boardX, -this.data.boardY)
     ctx.scale(this.data.boardScale, this.data.boardScale)
     this.data.patterns.forEach((value)=>{
       this.drawObject(value, ctx, value == this.data.selected)
@@ -953,13 +998,13 @@ Page({
       }
       ctx.beginPath()
       ctx.moveTo(startX, startY)
-      console.log(startX, startY)
+      //console.log(startX, startY)
       for(var point = 0; point < obj.path.length; point++){
         ctx.lineTo(obj.path[point].x, obj.path[point].y)
-        console.log(obj.path[point])
+        //console.log(obj.path[point])
       }
       ctx.lineTo(endX, endY)
-      console.log(endX, endY)
+      //console.log(endX, endY)
       ctx.stroke()
       ctx.beginPath()
       ctx.moveTo(endX, endY)
@@ -995,7 +1040,7 @@ Page({
         var objX = obj.realX - ctx.measureText(obj.text).width / 2
         var objY = obj.realY + obj.size / 2
         if(selected){
-          ctx.strokeRect(objX, mapCor(obj.realY - obj.size / 2, AXE.Y), ctx.measureText(obj.text).width, obj.size)
+          ctx.strokeRect(objX, obj.realY - obj.size / 2, ctx.measureText(obj.text).width, obj.size)
         }
         //ctx.font = obj.size + "px SimHei"
         ctx.fillText(obj.text, objX, objY)
@@ -1042,7 +1087,7 @@ Page({
   onTouchCanvas: function(event){
     var {x, y} = this.touchCoorToReal(event.touches[0])
     console.log(event)
-    console.log("realx:", x, " realY:", y)
+    //console.log("realx:", x, " realY:", y)
     switch(this.data.paintMode){
       case this.data.SHAPE.SELECT:
         this.selectObject(x, y)
@@ -1061,7 +1106,7 @@ Page({
           this.arrow_drawing_cache.lastX = event.touches[0].x
           this.arrow_drawing_cache.lastY = event.touches[0].y
         }
-        console.log(this.arrow_drawing_cache)
+        //console.log(this.arrow_drawing_cache)
         break
       case this.data.SHAPE.TEXT:
         this.setData({
@@ -1129,9 +1174,9 @@ Page({
         }
         if (touch){
           var {x, y} = this.touchCoorToReal(touch)
-          console.log("touch:", touch)
+          //console.log("touch:", touch)
           //var x = touch.x, y = touch.y
-          console.log("x ", x, "y ", y)
+          //console.log("x ", x, "y ", y)
           var endIndex = this.findObject(x, y)
           if (endIndex < 0) return
           var end = this.data.patterns[endIndex]
