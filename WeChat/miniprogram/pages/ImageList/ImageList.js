@@ -432,15 +432,18 @@ Page({
     }
     ctx.scale(scale, scale)
     console.log(ctx)
-    for (var i = 0; i < patterns.length; i++) {
-      if(!patterns[i]) continue
-      this.drawObject(patterns[i], ctx)
-    }
+    patterns.forEach((value) => {
+      if(value) this.drawObject(value, ctx)
+    })
+    // for (var i = 0; i < patterns.length; i++) {
+    //   if(!patterns[i]) continue
+    //   this.drawObject(patterns[i], ctx)
+    // }
   },
 
   drawObject: function(obj, ctx){
     //console.log(obj)
-    const AXE = {X: true, Y: false}
+    //const AXE = {X: true, Y: false}
     if (obj.type == this.data.SHAPE.ARROW){
       var startX, startY, endX, endY
       switch(obj.startDirection){
@@ -486,7 +489,7 @@ Page({
         ctx.lineTo(obj.path[point].x, obj.path[point].y)
         console.log(obj.path[point])
       }
-      ctx.lineTo(endX, ndY)
+      ctx.lineTo(endX, endY)
       console.log(endX, endY)
       ctx.stroke()
       ctx.beginPath()
