@@ -610,7 +610,7 @@ Page({
       uuid: this.guid(),
       realX: x,
       realY: y,
-      size: 30,
+      size: 14,
       type: this.data.SHAPE.TEXT,
       text: text,
     })
@@ -959,9 +959,9 @@ Page({
       }
       else {
         if (obj.text != ""){
-          ctx.font = "20pt Calibri"
+          ctx.font = "14pt Calibri"
           var objX = obj.realX - ctx.measureText(obj.text).width / 2
-          var objY = obj.realY + 10
+          var objY = obj.realY + 7
           ctx.fillText(obj.text, objX, objY)
         }
         if (obj.type == this.data.SHAPE.SQUARE) {
