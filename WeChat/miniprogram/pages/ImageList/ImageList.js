@@ -80,6 +80,13 @@ Page({
   },
 
   createFigure: function() {
+    if (this.data.number >= 20) {
+      wx.showToast({
+        icon: 'none',
+        title: 'Limit 20 Figure.',
+      })
+      return;
+    }
     if (this.data.name.length == 0) {
       wx.showToast({
         icon: 'none',
