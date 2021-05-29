@@ -207,7 +207,7 @@ Page({
       });
     } else {
       wx.showToast({
-        title: 'Not a Record.',
+        title: 'No Permissions.',
       });
     }
   },
@@ -493,7 +493,7 @@ Page({
 
   zoomIn: function() {
     // this.data.boardScale += 0.2
-    if (this.data.boardScale >= 1.8) {
+    if (this.data.boardScale >= 2) {
       return
     }
     this.setData({
